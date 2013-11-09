@@ -9,6 +9,7 @@
 #import "MyHTTPConnection.h"
 #import "DDLog.h"
 #import "DDTTYLogger.h"
+#import "NSString+Hex.h"
 
 // Log levels: off, error, warn, info, verbose
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;
@@ -81,7 +82,7 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
         return;
     }
     
-    sppServiceUUID = [IOBluetoothSDPUUID uuid16:kBluetoothSDPUUID16ServiceClassSerialPort];
+    sppServiceUUID = [IOBluetoothSDPUUID uuidWithData:[@"d749856c514348fe8b8635e4494bd073" hexToBytes]];
     [deviceSelector addAllowedUUID:sppServiceUUID];
     if ( [deviceSelector runModal] != kIOBluetoothUISuccess ) {
         NSLog( @"User has cancelled the device selection.\n" );
