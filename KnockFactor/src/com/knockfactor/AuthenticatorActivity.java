@@ -380,7 +380,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
-                mAccept = new AcceptThread(this, mHandler, mBluetoothAdapter, mUsers);
+                mAccept = new AcceptThread(getApplicationContext(), mHandler, mBluetoothAdapter, mUsers);
                 mAccept.start();
             }
 //            Intent discoverableIntent = new
@@ -552,6 +552,32 @@ public class AuthenticatorActivity extends TestableActivity {
             if (indicator != null) {
                 indicator.setPhase(mTotpCountdownPhase);
             }
+        }
+    }
+
+    public static PinInfo[] getUsers(AccountDb accountDb, OtpSource mOtpProvider) {
+        ArrayList<String> usernames = new ArrayList<String>();
+        accountDb.getNames(usernames);
+
+        int userCount = usernames.size();
+
+        if (userCount > 0) {
+            PinInfo[] users = new PinInfo[userCount];
+
+            for (int i = 0; i < userCount; ++i) {
+                String user = usernames.get(i);
+
+                PinInfo currentPin = new PinInfo();
+                currentPin.pin = "_ _ _ _ _ _";
+                currentPin.hotpCodeGenerationAllowed = true;
+
+                try {
+                    users[i] = computePin(currentPin, accountDb, mOtpProvider, user, false);
+                } catch (OtpSourceException ignored) {
+                }
+            }
+        } else {
+            return new PinInfo[0]; // clear any existing user PIN state
         }
     }
 
@@ -974,7 +1000,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     // Add the name and address to an array adapter to show in a ListView
                     if (device.getAddress().equals(selected)) {
-                        new ConnectThread(this, mBluetoothAdapter, device, mHandler, mUsers).start();
+                        new ConnectThread(getApplicationContext, mBluetoothAdapter, device, mHandler, mUsers).start();
 
                         Toast.makeText(this, "connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
 
