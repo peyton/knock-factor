@@ -11,7 +11,7 @@ public class KnockFactorService extends IntentService {
 
     public static final String STATUS = "com.knockfactor.knockfactorservice.STATUS";
 
-    private AuthenticatorActivity.ConnectThread ConnectThread;
+    private AuthenticatorActivity.ConnectThread mConnectThread;
     private AccountDb mAccountDb;
     private BluetoothAdapter mBTAdapter;
     private AuthenticatorActivity.PinInfo[] mUsers;
@@ -22,6 +22,7 @@ public class KnockFactorService extends IntentService {
         super.onCreate();
         mAccountDb = DependencyInjector.getAccountDb();
         mOtpSource = DependencyInjector.getOtpProvider();
+        mBTAdapter = BluetoothAdapter.getDefaultAdapter();
         mUsers = AuthenticatorActivity.getUsers(mAccountDb, mOtpSource);
     }
 
@@ -33,10 +34,10 @@ public class KnockFactorService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         boolean knockDetected = intent.getBooleanExtra("STATUS", false);
         if (knockDetected) {
-            ConnectThread = new AuthenticatorActivity.ConnectThread(getApplicationContext(), mBTAdapter,
+            mConnectThread = new AuthenticatorActivity.ConnectThread(getApplicationContext(), mBTAdapter,
                     AuthenticatorActivity.getPairedDevice(mBTAdapter, AuthenticatorActivity.getMAC(this)),
                     new Handler(), mUsers);
-
+            mConnectThread.start();
         }
     }
 }
