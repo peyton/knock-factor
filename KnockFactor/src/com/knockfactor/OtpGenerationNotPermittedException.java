@@ -23,7 +23,7 @@ package com.knockfactor;
  * @author klyubin@google.com (Alex Klyubin)
  */
 public class OtpGenerationNotPermittedException extends OtpSourceException {
-  public OtpGenerationNotPermittedException(String message) {
-    super(message);
-  }
+    public OtpGenerationNotPermittedException(String message) {
+        super(message);
+    }
 }

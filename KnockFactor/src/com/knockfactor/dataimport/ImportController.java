@@ -25,11 +25,13 @@ import android.content.Intent;
  * @author klyubin@google.com (Alex Klyubin)
  */
 public interface ImportController {
-  public interface Listener {
-    void onDataImported();
-    void onOldAppUninstallSuggested(Intent uninstallIntent);
-    void onFinished();
-  }
+    public interface Listener {
+        void onDataImported();
 
-  void start(Context context, Listener listener);
+        void onOldAppUninstallSuggested(Intent uninstallIntent);
+
+        void onFinished();
+    }
+
+    void start(Context context, Listener listener);
 }

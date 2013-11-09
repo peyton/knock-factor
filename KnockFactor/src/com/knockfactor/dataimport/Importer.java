@@ -16,11 +16,11 @@
 
 package com.knockfactor.dataimport;
 
-import com.knockfactor.AccountDb;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.knockfactor.AccountDb;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,134 +35,135 @@ import java.util.List;
  */
 public class Importer {
 
-  private static final String LOG_TAG = Importer.class.getSimpleName();
+    private static final String LOG_TAG = Importer.class.getSimpleName();
 
-  // @VisibleForTesting
-  static final String KEY_ACCOUNTS = "accountDb";
+    // @VisibleForTesting
+    static final String KEY_ACCOUNTS = "accountDb";
 
-  // @VisibleForTesting
-  static final String KEY_PREFERENCES = "preferences";
+    // @VisibleForTesting
+    static final String KEY_PREFERENCES = "preferences";
 
-  // @VisibleForTesting
-  static final String KEY_NAME = "name";
+    // @VisibleForTesting
+    static final String KEY_NAME = "name";
 
-  // @VisibleForTesting
-  static final String KEY_ENCODED_SECRET = "encodedSecret";
+    // @VisibleForTesting
+    static final String KEY_ENCODED_SECRET = "encodedSecret";
 
-  // @VisibleForTesting
-  static final String KEY_TYPE = "type";
+    // @VisibleForTesting
+    static final String KEY_TYPE = "type";
 
-  // @VisibleForTesting
-  static final String KEY_COUNTER = "counter";
+    // @VisibleForTesting
+    static final String KEY_COUNTER = "counter";
 
-  /**
-   * Imports the contents of the provided {@link Bundle} into the provided {@link AccountDb} and
-   * {@link SharedPreferences}. Does not overwrite existing records in the database.
-   *
-   * @param bundle source bundle.
-   * @param accountDb destination {@link AccountDb}.
-   * @param preferences destination preferences or {@code null} for none.
-   */
-  public void importFromBundle(Bundle bundle, AccountDb accountDb, SharedPreferences preferences) {
-    Bundle accountDbBundle = bundle.getBundle(KEY_ACCOUNTS);
-    if (accountDbBundle != null) {
-      importAccountDbFromBundle(accountDbBundle, accountDb);
-    }
-
-    if (preferences != null) {
-      Bundle preferencesBundle = bundle.getBundle(KEY_PREFERENCES);
-      if (preferencesBundle != null) {
-        importPreferencesFromBundle(preferencesBundle, preferences);
-      }
-    }
-  }
-
-  private void importAccountDbFromBundle(Bundle bundle, AccountDb accountDb) {
-    // Each account is stored in a Bundle whose key is a string representing the ordinal (integer)
-    // position of the account in the database.
-    List<String> sortedAccountBundleKeys = new ArrayList<String>(bundle.keySet());
-    Collections.sort(sortedAccountBundleKeys, new IntegerStringComparator());
-    int importedAccountCount = 0;
-    for (String accountBundleKey : sortedAccountBundleKeys) {
-      Bundle accountBundle = bundle.getBundle(accountBundleKey);
-      String name = accountBundle.getString(KEY_NAME);
-      if (name == null) {
-        Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": name missing");
-        continue;
-      }
-      if (accountDb.nameExists(name)) {
-        // Don't log account name here and below because it's considered PII
-        Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": already configured");
-        continue;
-      }
-      String encodedSecret = accountBundle.getString(KEY_ENCODED_SECRET);
-      if (encodedSecret == null) {
-        Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": secret missing");
-        continue;
-      }
-      String typeString = accountBundle.getString(KEY_TYPE);
-      AccountDb.OtpType type;
-      if ("totp".equals(typeString)) {
-        type = AccountDb.OtpType.TOTP;
-      } else if ("hotp".equals(typeString)) {
-        type = AccountDb.OtpType.HOTP;
-      } else {
-        Log.w(LOG_TAG, "Skipping account #" + accountBundleKey
-            + ": unsupported type: \"" + typeString + "\"");
-        continue;
-      }
-
-      Integer counter =
-          accountBundle.containsKey(KEY_COUNTER) ? accountBundle.getInt(KEY_COUNTER) : null;
-      if (counter == null) {
-        if (type == AccountDb.OtpType.HOTP) {
-          Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": counter missing");
-          continue;
-        } else {
-          // TOTP
-          counter = AccountDb.DEFAULT_HOTP_COUNTER;
+    /**
+     * Imports the contents of the provided {@link Bundle} into the provided {@link AccountDb} and
+     * {@link SharedPreferences}. Does not overwrite existing records in the database.
+     *
+     * @param bundle      source bundle.
+     * @param accountDb   destination {@link AccountDb}.
+     * @param preferences destination preferences or {@code null} for none.
+     */
+    public void importFromBundle(Bundle bundle, AccountDb accountDb, SharedPreferences preferences) {
+        Bundle accountDbBundle = bundle.getBundle(KEY_ACCOUNTS);
+        if (accountDbBundle != null) {
+            importAccountDbFromBundle(accountDbBundle, accountDb);
         }
-      }
 
-      accountDb.update(name, encodedSecret, name, type, counter);
-      importedAccountCount++;
+        if (preferences != null) {
+            Bundle preferencesBundle = bundle.getBundle(KEY_PREFERENCES);
+            if (preferencesBundle != null) {
+                importPreferencesFromBundle(preferencesBundle, preferences);
+            }
+        }
     }
 
-    Log.i(LOG_TAG, "Imported " + importedAccountCount + " accounts");
-  }
+    private void importAccountDbFromBundle(Bundle bundle, AccountDb accountDb) {
+        // Each account is stored in a Bundle whose key is a string representing the ordinal (integer)
+        // position of the account in the database.
+        List<String> sortedAccountBundleKeys = new ArrayList<String>(bundle.keySet());
+        Collections.sort(sortedAccountBundleKeys, new IntegerStringComparator());
+        int importedAccountCount = 0;
+        for (String accountBundleKey : sortedAccountBundleKeys) {
+            Bundle accountBundle = bundle.getBundle(accountBundleKey);
+            String name = accountBundle.getString(KEY_NAME);
+            if (name == null) {
+                Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": name missing");
+                continue;
+            }
+            if (accountDb.nameExists(name)) {
+                // Don't log account name here and below because it's considered PII
+                Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": already configured");
+                continue;
+            }
+            String encodedSecret = accountBundle.getString(KEY_ENCODED_SECRET);
+            if (encodedSecret == null) {
+                Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": secret missing");
+                continue;
+            }
+            String typeString = accountBundle.getString(KEY_TYPE);
+            AccountDb.OtpType type;
+            if ("totp".equals(typeString)) {
+                type = AccountDb.OtpType.TOTP;
+            } else if ("hotp".equals(typeString)) {
+                type = AccountDb.OtpType.HOTP;
+            } else {
+                Log.w(LOG_TAG, "Skipping account #" + accountBundleKey
+                        + ": unsupported type: \"" + typeString + "\"");
+                continue;
+            }
 
-  private static class IntegerStringComparator implements Comparator<String> {
-    @Override
-    public int compare(String lhs, String rhs) {
-      int lhsValue = Integer.parseInt(lhs);
-      int rhsValue = Integer.parseInt(rhs);
-      return lhsValue - rhsValue;
+            Integer counter =
+                    accountBundle.containsKey(KEY_COUNTER) ? accountBundle.getInt(KEY_COUNTER) : null;
+            if (counter == null) {
+                if (type == AccountDb.OtpType.HOTP) {
+                    Log.w(LOG_TAG, "Skipping account #" + accountBundleKey + ": counter missing");
+                    continue;
+                } else {
+                    // TOTP
+                    counter = AccountDb.DEFAULT_HOTP_COUNTER;
+                }
+            }
+
+            accountDb.update(name, encodedSecret, name, type, counter);
+            importedAccountCount++;
+        }
+
+        Log.i(LOG_TAG, "Imported " + importedAccountCount + " accounts");
     }
-  }
 
-  private boolean tryImportPreferencesFromBundle(Bundle bundle, SharedPreferences preferences) {
-    SharedPreferences.Editor preferencesEditor = preferences.edit();
-    for (String key : bundle.keySet()) {
-      Object value = bundle.get(key);
-      if (value instanceof Boolean) {
-        preferencesEditor.putBoolean(key, (Boolean) value);
-      } else if (value instanceof Float) {
-        preferencesEditor.putFloat(key, (Float) value);
-      } else if (value instanceof Integer) {
-        preferencesEditor.putInt(key, (Integer) value);
-      } else if (value instanceof Long) {
-        preferencesEditor.putLong(key, (Long) value);
-      } else if (value instanceof String) {
-        preferencesEditor.putString(key, (String) value);
-      } else {
-        // Ignore: can only be Set<String> at the moment (API Level 11+), which we don't use anyway.
-      }
+    private static class IntegerStringComparator implements Comparator<String> {
+        @Override
+        public int compare(String lhs, String rhs) {
+            int lhsValue = Integer.parseInt(lhs);
+            int rhsValue = Integer.parseInt(rhs);
+            return lhsValue - rhsValue;
+        }
     }
-    return preferencesEditor.commit();
-  }
 
-  private void importPreferencesFromBundle(Bundle bundle, SharedPreferences preferences) {
-    // Retry until the operation succeeds
-    while (!tryImportPreferencesFromBundle(bundle, preferences)) {}
-  }
+    private boolean tryImportPreferencesFromBundle(Bundle bundle, SharedPreferences preferences) {
+        SharedPreferences.Editor preferencesEditor = preferences.edit();
+        for (String key : bundle.keySet()) {
+            Object value = bundle.get(key);
+            if (value instanceof Boolean) {
+                preferencesEditor.putBoolean(key, (Boolean) value);
+            } else if (value instanceof Float) {
+                preferencesEditor.putFloat(key, (Float) value);
+            } else if (value instanceof Integer) {
+                preferencesEditor.putInt(key, (Integer) value);
+            } else if (value instanceof Long) {
+                preferencesEditor.putLong(key, (Long) value);
+            } else if (value instanceof String) {
+                preferencesEditor.putString(key, (String) value);
+            } else {
+                // Ignore: can only be Set<String> at the moment (API Level 11+), which we don't use anyway.
+            }
+        }
+        return preferencesEditor.commit();
+    }
+
+    private void importPreferencesFromBundle(Bundle bundle, SharedPreferences preferences) {
+        // Retry until the operation succeeds
+        while (!tryImportPreferencesFromBundle(bundle, preferences)) {
+        }
+    }
 }

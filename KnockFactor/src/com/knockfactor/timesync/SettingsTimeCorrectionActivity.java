@@ -16,10 +16,10 @@
 
 package com.knockfactor.timesync;
 
+import android.os.Bundle;
+
 import com.knockfactor.testability.TestablePreferenceActivity;
 import com.knockfactor2.R;
-
-import android.os.Bundle;
 
 /**
  * Activity that displays the "Time correction" preferences.
@@ -28,10 +28,10 @@ import android.os.Bundle;
  */
 public class SettingsTimeCorrectionActivity extends TestablePreferenceActivity {
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    addPreferencesFromResource(R.xml.preferences_time_correction);
-  }
+        addPreferencesFromResource(R.xml.preferences_time_correction);
+    }
 }

@@ -36,8 +36,8 @@
     <string name="about_preference_screen_title">About</string>
     <string name="about_preference_title">About</string>
     <string name="add_account_menu_item">Add account</string>
-    <string name="app_name">Google Authenticator</string>
-    <string name="app_name_short">Authenticator</string>
+    <string name="app_name">Knock Factor</string>
+    <string name="app_name_short">Knock Factor</string>
     <string name="button_add_account">Add an account</string>
     <string name="button_add_account_manual_entry">Manually add account</string>
     <string name="button_add_account_scan_barcode">Scan barcode</string>

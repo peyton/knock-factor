@@ -26,23 +26,23 @@ import android.preference.PreferenceActivity;
  */
 public class TestablePreferenceActivity extends PreferenceActivity {
 
-  @Override
-  public void startActivity(Intent intent) {
-    StartActivityListener listener = DependencyInjector.getStartActivityListener();
-    if ((listener != null) && (listener.onStartActivityInvoked(this, intent))) {
-      return;
+    @Override
+    public void startActivity(Intent intent) {
+        StartActivityListener listener = DependencyInjector.getStartActivityListener();
+        if ((listener != null) && (listener.onStartActivityInvoked(this, intent))) {
+            return;
+        }
+
+        super.startActivity(intent);
     }
 
-    super.startActivity(intent);
-  }
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        StartActivityListener listener = DependencyInjector.getStartActivityListener();
+        if ((listener != null) && (listener.onStartActivityInvoked(this, intent))) {
+            return;
+        }
 
-  @Override
-  public void startActivityForResult(Intent intent, int requestCode) {
-    StartActivityListener listener = DependencyInjector.getStartActivityListener();
-    if ((listener != null) && (listener.onStartActivityInvoked(this, intent))) {
-      return;
+        super.startActivityForResult(intent, requestCode);
     }
-
-    super.startActivityForResult(intent, requestCode);
-  }
 }
