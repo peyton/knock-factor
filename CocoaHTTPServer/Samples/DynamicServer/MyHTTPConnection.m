@@ -4,6 +4,7 @@
 #import "HTTPResponseTest.h"
 #import "HTTPLogging.h"
 #import "DynamicServerAppDelegate.h"
+#import "CustomHTTPResponse.h"
 
 // Log levels: off, error, warn, info, verbose
 // Other flags: trace
@@ -98,7 +99,7 @@ NSObject<HTTPResponse> *stringResponse(NSString *string);
         
         [(DynamicServerAppDelegate *)[NSApp delegate] sendMessage:hostname];
         
-        return [[HTTPDataResponse alloc] initWithData:[hostname dataUsingEncoding:NSUTF8StringEncoding]];
+        return stringResponse(hostname);
     }
     
     if ([relativePath isEqualToString:@"/passstring"])
@@ -115,5 +116,6 @@ NSObject<HTTPResponse> *stringResponse(NSString *string);
 @end
 
 NSObject<HTTPResponse> *stringResponse(NSString *string) {
-    return [[HTTPDataResponse alloc] initWithData:[string dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    return [[CustomHTTPResponse alloc] initWithData:[string dataUsingEncoding:NSUTF8StringEncoding]];
 }
