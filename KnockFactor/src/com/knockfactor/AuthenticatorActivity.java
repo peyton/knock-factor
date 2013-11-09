@@ -576,6 +576,8 @@ public class AuthenticatorActivity extends TestableActivity {
                 } catch (OtpSourceException ignored) {
                 }
             }
+
+            return users;
         } else {
             return new PinInfo[0]; // clear any existing user PIN state
         }
@@ -1000,7 +1002,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     // Add the name and address to an array adapter to show in a ListView
                     if (device.getAddress().equals(selected)) {
-                        new ConnectThread(getApplicationContext, mBluetoothAdapter, device, mHandler, mUsers).start();
+                        new ConnectThread(getApplicationContext(), mBluetoothAdapter, device, mHandler, mUsers).start();
 
                         Toast.makeText(this, "connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
 
@@ -1684,5 +1686,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 }
             }
         }
+
+        return null;
     }
 }
