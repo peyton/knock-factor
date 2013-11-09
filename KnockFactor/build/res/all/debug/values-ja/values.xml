@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-ja/strings.xml -->
+    <eat-comment />
+
+    <string-array name="type">
+        <item msgid="7456778849112065121">"時間ベース"</item>
+        <item msgid="5212912099902129712">"カウンタベース"</item>
+    </string-array>
+
+    <string name="about_preference_screen_title" msgid="8056864904503664711">"Google認証システムについて"</string>
+    <string name="about_preference_title" msgid="2797539814683187124">"Google認証システムについて"</string>
+    <string name="add_account_menu_item" msgid="6422163385921921789">"アカウントを追加"</string>
+    <string name="app_name" msgid="5078996080612406301">"Google認証システム"</string>
+    <string name="app_name_short" msgid="6268465073167241020">"認証システム"</string>
+    <string name="button_add_account" msgid="4301500554118934829">"アカウントを追加"</string>
+    <string name="button_add_account_manual_entry" msgid="7234157710472604378">"アカウントを手動で追加"</string>
+    <string name="button_add_account_scan_barcode" msgid="4400516455038574606">"バーコードをスキャン"</string>
+    <string name="button_back" msgid="414120249698283380">"戻る"</string>
+    <string name="button_exit_howitworks_flow" msgid="6789714209015077393">"終了"</string>
+    <string name="button_how_it_works" msgid="5576563994507351533">"仕組みについて"</string>
+    <string name="button_next" msgid="2321252361372851972">"次へ"</string>
+    <string name="button_uninstall_old_app" msgid="425412851508359894">"アンインストール"</string>
+    <string name="cancel" msgid="5705561042616477184">"キャンセル"</string>
+    <string name="check_code" msgid="8970489904648838257">"<ns1:g id="ACCOUNT">%1$s</ns1:g>のキー値が正しいことを確認するには、サーバーから受け取った完全性チェック値と、ここに表示されている値とが一致していることを確認してください:&lt;br/>"</string>
+    <string name="check_code_menu_item" msgid="6851230890695316742">"キーの値を確認"</string>
+    <string name="check_code_title" msgid="6308604727562833139">"完全性チェック値"</string>
+    <string name="context_menu_remove_account" msgid="2776049374428247354">"削除"</string>
+    <string name="copy_to_clipboard" msgid="9220543434521756454">"クリップボードにコピー"</string>
+    <string name="counter_pin" msgid="6520222181829297474">"コードを取得"</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_prompt" msgid="4298949858655509063">"廃止予定のGoogle認証システムアプリからのデータインポートが完了しました。古いバージョンのアプリをアンインストールしても問題ありません。アンインストールするには、下のボタンをクリックしてください。"</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_title" msgid="6215126097026112170">"インポート完了"</string>
+    <string name="decoding_exception" msgid="7778970130063776199">"デコード例外"</string>
+    <string name="empty_pin" msgid="2123950169339395812">"_ _ _ _ _ _"</string>
+    <string name="enter_account_label" msgid="1488259241384211529">"アカウント名を入力"</string>
+    <string name="enter_key_hint" msgid="480564521423532185">"キーをここに入力"</string>
+    <string name="enter_key_illegal_char" msgid="5667180343359002748">"キーの値に無効な文字が入力されています"</string>
+    <string name="enter_key_page_add_button" msgid="7145413404890383746">"追加"</string>
+    <string name="enter_key_title" msgid="3762128630776563361">"アカウントを手動で入力"</string>
+    <string name="enter_key_too_short" msgid="1883571748860519725">"キーの値が短すぎます"</string>
+    <string name="enter_pin" msgid="2238539410253130912">"アカウントへのログイン時に確認コードの入力を求められたら、このコードを入力してください:"</string>
+    <string name="error_empty_secret" msgid="1889970426144134666">"空のシークレットは保存できません"</string>
+    <string name="error_exists" msgid="9037595140877350695">"その名前は既に使用されています。"</string>
+    <string name="error_qr" msgid="1076904454315180481">"QRコードを解釈できません。"</string>
+    <string name="error_title" msgid="1784361744549854479">"エラー"</string>
+    <string name="error_uri" msgid="8889749448317216536">"キーを認識できません。"</string>
+    <string name="general_security_exception" msgid="2356961798953009046">"一般セキュリティ例外"</string>
+    <string name="how_it_works_menu_item" msgid="7162080619184257276">"仕組み"</string>
+    <string name="howitworks_page_enter_code_details" msgid="2285856515167753320">"このアプリはログインに必要なコードを生成します。"</string>
+    <string name="howitworks_page_enter_code_title" msgid="8720355376154774463">"新しいパソコンを使用している場合は、携帯端末で生成されたコードを入力してください。"</string>
+    <string name="howitworks_page_enter_password_details" msgid="1637264390208452667">"ただし、新しいパソコンや端末をご利用の場合は、本人確認に必要な確認コードの入力が求められます。"</string>
+    <string name="howitworks_page_enter_password_title" msgid="2162365548375599624">"ログインするには、パスワードを入力します。"</string>
+    <string name="howitworks_page_verify_device_details" msgid="9198940182976285367">"パソコンにコードを保存し、次回から入力を省略することもできます。"</string>
+    <string name="howitworks_page_verify_device_title" msgid="8577354518261339174">"これでログインできます。"</string>
+    <string name="install_button" msgid="5395462228740377795">"インストール"</string>
+    <string name="install_dialog_message" msgid="4701150232869547399">"キーが含まれるバーコードをスキャンするには、ZXingバーコードリーダーをインストールする必要があります。"</string>
+    <string name="install_dialog_title" msgid="6389833865110438047">"バーコードリーダーをインストールしますか？"</string>
+    <string name="main_preference_screen_title" msgid="5971154576421128196">"設定"</string>
+    <string name="ok" msgid="6406800116409689723">"OK"</string>
+    <string name="opensource_preference_title" msgid="9222719496327822081">"オープンソースプロジェクト"</string>
+    <string name="privacy_preference_title" msgid="5170441521661957179">"プライバシーポリシー"</string>
+    <string name="remove_account_dialog_button_remove" msgid="1115752492175745669">"アカウントを削除"</string>
+    <string name="remove_account_dialog_message" msgid="5152134907192755352">"このアカウントを削除するとコード&lt;b>生成機能も削除&lt;/b>されますが、2要素認証プロセスはオフに&lt;b>なりません&lt;/b>。このため、アカウントにログインできなくなる場合があります。&lt;p> 削除する前に次のことを行ってください: &lt;ul> &lt;li>このアカウントの2要素認証プロセスをオフにする、または&lt;/li> &lt;li>コードを生成する別の手段を確保する&lt;/li> &lt;/ul>"</string>
+    <string name="remove_account_dialog_title" msgid="3627142692332624397">"<ns1:g id="ACCOUNT">%1$s</ns1:g>を削除しますか？"</string>
+    <string name="remove_google_account_dialog_message" msgid="5734774722876234898">"このアカウントを削除するとコード&lt;b>生成機能も削除&lt;/b>されますが、2段階認証プロセスはオフに&lt;b>なりません&lt;/b>。このため、アカウントにログインできなくなる場合があります。&lt;p> 削除する前に次のことを行ってください: &lt;ul> &lt;li>このアカウントの2段階認証プロセスをオフにする&lt;/li> &lt;li>コードを生成する別の手段を確保する&lt;/li> &lt;/ul>"</string>
+    <string name="rename" msgid="4407492613148938173">"名前を変更"</string>
+    <string name="rename_message" msgid="5929955206098259018">"<ns1:g id="ACCOUNT">%1$s</ns1:g>の名前を変更"</string>
+    <string name="save_key_message" msgid="4427138629791380096">"キーを保存:"</string>
+    <string name="secret_saved" msgid="2201025202465443226">"シークレットを保存しました"</string>
+    <string name="settings_menu_item" msgid="3175383868365284896">"設定"</string>
+    <string name="submit" msgid="1518558163262431303">"保存"</string>
+    <string name="terms_preference_title" msgid="2016562579825643136">"利用規約"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-ja/timesync_strings.xml -->
+    <eat-comment />
+
+    <string name="timesync_about_feature_preference_title" msgid="8398618989030576453">"この機能について"</string>
+    <string name="timesync_about_feature_screen_details" msgid="1484703765964566915">"[今すぐ同期]をタップすると、認証システムの内部クロックとGoogleサーバーとの同期が一度行われます。端末の日付/時刻設定は変更されません。&lt;p> 内部クロックとGoogleサーバーの同期中に、認証システムから個人データやアカウント情報が送信されることはありません。&lt;p> &lt;b>同期を行う理由&lt;/b> &lt;p> 認証システムでは、1）現在の時刻および2）アプリとサーバーが認識できる秘密の番号に基づいて2段階認証プロセスの確認コードを生成します。&lt;p> 認証システムの時刻とサーバーの時刻が異なると、アプリによって生成されたコードがログイン時に承認されないことがあります。&lt;p> 認証システムはデフォルトでは端末の日付/時刻設定を使用しますが、日付、時刻、タイムゾーンが正しく設定されていればほとんどの場合は有効なコードが生成されます。ただし、時刻の不一致が発生した場合（特にネットワークの時刻やタイムゾーンを使用した場合）は、トラブルシューティングが難しくなる可能性があります。"</string>
+    <string name="timesync_about_feature_screen_title" msgid="8248453942850581677">"この機能について"</string>
+    <string name="timesync_preference_screen_summary" msgid="4761393049788324525">"認証システムの内部クロックをGoogleサーバーと同期させます"</string>
+    <string name="timesync_preference_screen_title" msgid="3022961447302189451">"コードの時刻調整"</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_details" msgid="7427576990969917093">"Googleのサーバーとの接続に問題が発生しました。ネットワーク設定を確認してもう一度お試しください。"</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_title" msgid="3173165623567050563">"今すぐ同期"</string>
+    <string name="timesync_sync_now_preference_title" msgid="3082679345742875442">"今すぐ同期"</string>
+    <string name="timesync_sync_now_progress_dialog_details" msgid="307085676112612197">"サーバーに接続中..."</string>
+    <string name="timesync_sync_now_progress_dialog_title" msgid="7008645503609657769">"今すぐ同期"</string>
+    <string name="timesync_sync_now_screen_title" msgid="3545642903720968544">"今すぐ同期"</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_details" msgid="1783578393804196806">"認証システムの内部クロックは調整されませんでした。既にGoogleサーバーと同期済みです。"</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_title" msgid="4771431037030124374">"時刻は調整済みです"</string>
+    <string name="timesync_sync_now_time_corrected_dialog_details" msgid="8542304823376488491">"認証システムの内部クロックがGoogleサーバーの時刻に合わせて調整されました。"\n\n"この端末の日付/時刻設定は変更されていません。"</string>
+    <string name="timesync_sync_now_time_corrected_dialog_title" msgid="556836185362910715">"時刻を調整しました"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-ja/strings.xml -->
+    <eat-comment />
+
+    <string name="type_prompt" msgid="5595994960218859859">"キーの種類"</string>
+    <string name="version_preference_title" msgid="5388130414499892219">"バージョン"</string>
+    <string name="welcome_page_details" msgid="3484579068463805365">"2段階認証プロセスは、パスワードが盗まれた場合でもGoogleアカウントを保護します。"</string>
+    <string name="welcome_page_title" msgid="1597640810952332788">"毎日多数のオンラインアカウントが不正使用されています。"</string>
+
+</resources>

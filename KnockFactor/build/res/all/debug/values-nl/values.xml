@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-nl/strings.xml -->
+    <eat-comment />
+
+    <string-array name="type">
+        <item msgid="7456778849112065121">"Tijdgebonden"</item>
+        <item msgid="5212912099902129712">"Op basis van telling"</item>
+    </string-array>
+
+    <string name="about_preference_screen_title" msgid="8056864904503664711">"Over"</string>
+    <string name="about_preference_title" msgid="2797539814683187124">"Over"</string>
+    <string name="add_account_menu_item" msgid="6422163385921921789">"Account toevoegen"</string>
+    <string name="app_name" msgid="5078996080612406301">"Google Authenticator"</string>
+    <string name="app_name_short" msgid="6268465073167241020">"Authenticator"</string>
+    <string name="button_add_account" msgid="4301500554118934829">"Account toevoegen"</string>
+    <string name="button_add_account_manual_entry" msgid="7234157710472604378">"Handmatig een account toevoegen"</string>
+    <string name="button_add_account_scan_barcode" msgid="4400516455038574606">"Streepjescode scannen"</string>
+    <string name="button_back" msgid="414120249698283380">"Terug"</string>
+    <string name="button_exit_howitworks_flow" msgid="6789714209015077393">"Afsluiten"</string>
+    <string name="button_how_it_works" msgid="5576563994507351533">"Bekijk hoe het werkt"</string>
+    <string name="button_next" msgid="2321252361372851972">"Volgende"</string>
+    <string name="button_uninstall_old_app" msgid="425412851508359894">"Verwijderen"</string>
+    <string name="cancel" msgid="5705561042616477184">"Annuleren"</string>
+    <string name="check_code" msgid="8970489904648838257">"Als u zeker wilt weten of u de juiste sleutelwaarde voor <ns1:g id="ACCOUNT">%1$s</ns1:g> gebruikt, controleert u of de waarde hier overeenkomt met de integriteitscontrolewaarde die de server levert:&lt;br/>"</string>
+    <string name="check_code_menu_item" msgid="6851230890695316742">"Sleutelwaarde controleren"</string>
+    <string name="check_code_title" msgid="6308604727562833139">"Integriteitscontrolewaarde"</string>
+    <string name="context_menu_remove_account" msgid="2776049374428247354">"Verwijderen"</string>
+    <string name="copy_to_clipboard" msgid="9220543434521756454">"Kopiëren naar klembord"</string>
+    <string name="counter_pin" msgid="6520222181829297474">"Code ophalen"</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_prompt" msgid="4298949858655509063">"Uw gegevens zijn geïmporteerd vanuit de verouderde Google Authenticator-app. U kunt nu hieronder klikken om de vorige versie van de app te verwijderen."</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_title" msgid="6215126097026112170">"Importeren is geslaagd"</string>
+    <string name="decoding_exception" msgid="7778970130063776199">"Uitzondering bij decoderen"</string>
+    <string name="empty_pin" msgid="2123950169339395812">"_ _ _ _ _ _"</string>
+    <string name="enter_account_label" msgid="1488259241384211529">"Accountnaam opgeven"</string>
+    <string name="enter_key_hint" msgid="480564521423532185">"Geef uw sleutel op"</string>
+    <string name="enter_key_illegal_char" msgid="5667180343359002748">"Sleutelwaarde bevat een ongeldig teken"</string>
+    <string name="enter_key_page_add_button" msgid="7145413404890383746">"Toevoegen"</string>
+    <string name="enter_key_title" msgid="3762128630776563361">"Handmatige accountinvoer"</string>
+    <string name="enter_key_too_short" msgid="1883571748860519725">"Sleutelwaarde is te kort"</string>
+    <string name="enter_pin" msgid="2238539410253130912">"Geef deze verificatiecode op wanneer hierom wordt gevraagd tijdens de aanmelding bij uw account:"</string>
+    <string name="error_empty_secret" msgid="1889970426144134666">"Kan geen leeg geheim opslaan"</string>
+    <string name="error_exists" msgid="9037595140877350695">"Deze naam is al in gebruik."</string>
+    <string name="error_qr" msgid="1076904454315180481">"Kan QR-code niet interpreteren."</string>
+    <string name="error_title" msgid="1784361744549854479">"Fout"</string>
+    <string name="error_uri" msgid="8889749448317216536">"Sleutel wordt niet herkend."</string>
+    <string name="general_security_exception" msgid="2356961798953009046">"Algemene beveiligingsuitzondering"</string>
+    <string name="how_it_works_menu_item" msgid="7162080619184257276">"Hoe het werkt"</string>
+    <string name="howitworks_page_enter_code_details" msgid="2285856515167753320">"Deze app genereert de code die nodig is om u aan te melden."</string>
+    <string name="howitworks_page_enter_code_title" msgid="8720355376154774463">"Geef op een nieuwe computer een code op via uw telefoon."</string>
+    <string name="howitworks_page_enter_password_details" msgid="1637264390208452667">"Als u op een nieuwe computer of nieuw apparaat werkt, vraagt Google u om een ​​speciale code om uw identiteit te kunnen verifiëren."</string>
+    <string name="howitworks_page_enter_password_title" msgid="2162365548375599624">"U moet uw wachtwoord opgeven om u aan te melden."</string>
+    <string name="howitworks_page_verify_device_details" msgid="9198940182976285367">"U kunt er ook voor kiezen de ​​computer te laten onthouden. U wordt op deze computer dan niet meer door Google om een code gevraagd."</string>
+    <string name="howitworks_page_verify_device_title" msgid="8577354518261339174">"U bent nu aangemeld."</string>
+    <string name="install_button" msgid="5395462228740377795">"Installeren"</string>
+    <string name="install_dialog_message" msgid="4701150232869547399">"Als u streepjescodes met sleutels wilt scannen, moet u eerst de streepjescodescanner ZXing installeren."</string>
+    <string name="install_dialog_title" msgid="6389833865110438047">"Streepjescodescanner installeren?"</string>
+    <string name="main_preference_screen_title" msgid="5971154576421128196">"Instellingen"</string>
+    <string name="ok" msgid="6406800116409689723">"OK"</string>
+    <string name="opensource_preference_title" msgid="9222719496327822081">"Open-sourceproject"</string>
+    <string name="privacy_preference_title" msgid="5170441521661957179">"Privacybeleid"</string>
+    <string name="remove_account_dialog_button_remove" msgid="1115752492175745669">"Account verwijderen"</string>
+    <string name="remove_account_dialog_message" msgid="5152134907192755352">"Als u dit account verwijdert, kunt u &lt;b>geen codes meer genereren&lt;/b>, maar wordt authenticatie in twee factoren &lt;b>niet&lt;/b> uitgeschakeld. Hierdoor kunt u zich mogelijk niet aanmelden bij uw account. &lt;p> Voordat u verwijdert: &lt;ul> &lt;li>Schakel authenticatie in twee factoren uit voor dit account, of&lt;/li> &lt;li>Zorg ervoor dat u een alternatieve methode voor het genereren van codes heeft.&lt;/li> &lt;/ul>"</string>
+    <string name="remove_account_dialog_title" msgid="3627142692332624397">"<ns1:g id="ACCOUNT">%1$s</ns1:g> verwijderen?"</string>
+    <string name="remove_google_account_dialog_message" msgid="5734774722876234898">"Als u dit account verwijdert, kunt u &lt;b>geen codes meer genereren&lt;/b>, maar wordt authenticatie in twee stappen niet uitgeschakeld. Hierdoor kunt u zich mogelijk niet aanmelden bij uw account. &lt;p> Voordat u verwijdert: &lt;ul> &lt;li>Schakel authenticatie in twee stappen uit voor dit account, of&lt;/li> &lt;li>Zorg ervoor dat u een alternatieve methode voor het genereren van codes heeft.&lt;/li> &lt;/ul>"</string>
+    <string name="rename" msgid="4407492613148938173">"Naam wijzigen"</string>
+    <string name="rename_message" msgid="5929955206098259018">"Naam van <ns1:g id="ACCOUNT">%1$s</ns1:g> wijzigen"</string>
+    <string name="save_key_message" msgid="4427138629791380096">"Sleutel opslaan voor"</string>
+    <string name="secret_saved" msgid="2201025202465443226">"Geheim opgeslagen"</string>
+    <string name="settings_menu_item" msgid="3175383868365284896">"Instellingen"</string>
+    <string name="submit" msgid="1518558163262431303">"Opslaan"</string>
+    <string name="terms_preference_title" msgid="2016562579825643136">"Servicevoorwaarden"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-nl/timesync_strings.xml -->
+    <eat-comment />
+
+    <string name="timesync_about_feature_preference_title" msgid="8398618989030576453">"Over deze functie"</string>
+    <string name="timesync_about_feature_screen_details" msgid="1484703765964566915">"Als u op &amp;quot;Nu synchroniseren&amp;quot; drukt, probeert Authenticator de interne klok eenmaal met de servers van Google te synchroniseren. De instellingen voor datum en tijd van het apparaat worden niet aangepast. &lt;p> Authenticator verzendt geen persoonlijke of accountgegevens tijdens het synchroniseren van de interne klok met de servers van Google. &lt;p> &lt;b>Waarom dit handig is&lt;/b> &lt;p> Authenticator genereert codes voor authenticatie in twee stappen op basis van 1) de huidige tijd en 2) een geheim nummer dat alleen de app en de server kennen. &lt;p> Als Authenticator en de server het niet eens zijn over de tijd, worden de codes die door de app worden gegenereerd, mogelijk niet geaccepteerd wanneer u zich probeert aan te melden. &lt;p> Authenticator gebruikt standaard de instellingen voor datum en tijd van het apparaat. U kunt er in de meeste gevallen voor zorgen dat geldige codes worden gegenereerd door te controleren of uw instellingen voor datum, tijd en tijdzone correct zijn geconfigureerd. Wanneer niet overeenkomende tijden voorkomen, is het oplossen hiervan vaak moeilijk (vooral wanneer u de tijd of tijdzones van uw netwerk overneemt)."</string>
+    <string name="timesync_about_feature_screen_title" msgid="8248453942850581677">"Over deze functie"</string>
+    <string name="timesync_preference_screen_summary" msgid="4761393049788324525">"De interne klok van Authenticator synchroniseren met de servers van Google"</string>
+    <string name="timesync_preference_screen_title" msgid="3022961447302189451">"Tijdcorrectie voor codes"</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_details" msgid="7427576990969917093">"Er is een probleem opgetreden bij het verbinden met de server van Google. Controleer uw netwerkinstellingen en probeer het opnieuw."</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_title" msgid="3173165623567050563">"Nu synchroniseren"</string>
+    <string name="timesync_sync_now_preference_title" msgid="3082679345742875442">"Nu synchroniseren"</string>
+    <string name="timesync_sync_now_progress_dialog_details" msgid="307085676112612197">"Verbinding maken met server…"</string>
+    <string name="timesync_sync_now_progress_dialog_title" msgid="7008645503609657769">"Nu synchroniseren"</string>
+    <string name="timesync_sync_now_screen_title" msgid="3545642903720968544">"Nu synchroniseren"</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_details" msgid="1783578393804196806">"De interne klok van Authenticator is niet aangepast omdat deze al synchroon lijkt te lopen met de servers van Google."</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_title" msgid="4771431037030124374">"Tijd is al correct"</string>
+    <string name="timesync_sync_now_time_corrected_dialog_details" msgid="8542304823376488491">"De interne klok van Authenticator is aangepast aan de tijd die door de servers van Google wordt geleverd. "\n\n"De instellingen voor datum en tijd van dit apparaat zijn niet aangepast."</string>
+    <string name="timesync_sync_now_time_corrected_dialog_title" msgid="556836185362910715">"Tijd is aangepast"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-nl/strings.xml -->
+    <eat-comment />
+
+    <string name="type_prompt" msgid="5595994960218859859">"Type sleutel"</string>
+    <string name="version_preference_title" msgid="5388130414499892219">"Versie"</string>
+    <string name="welcome_page_details" msgid="3484579068463805365">"Authenticatie in twee stappen beschermt uw Google-account, zelfs wanneer uw wachtwoord wordt gestolen."</string>
+    <string name="welcome_page_title" msgid="1597640810952332788">"Er worden elke dag duizenden accounts gehackt."</string>
+
+</resources>

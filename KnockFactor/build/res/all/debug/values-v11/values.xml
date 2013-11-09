@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-v11/colors.xml -->
+    <eat-comment />
+
+    <color name="countdown_indicator">#ff5478c2</color>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-v11/themes.xml -->
+    <eat-comment />
+
+    <style name="AccountListWithVerificationCodes">
+        <item name="android:dividerHeight">1dip</item>
+    </style>
+
+    <style name="AccountListWithVerificationCodesRowAccountName">
+        <item name="android:textColor">?android:attr/textColorTertiary</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
+    <style name="AccountListWithVerificationCodesRowCountdownIndicator">
+        <item name="com.knockfactor2:color">@color/countdown_indicator</item>
+    </style>
+
+    <style name="AccountListWithVerificationCodesRowVerificationCode">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="AuthenticatorTheme" parent="android:Theme.Holo">
+        <item name="accountListWithVerificationCodes">@style/AccountListWithVerificationCodes</item>
+        <item name="accountListWithVerificationCodesRowAccountName">@style/AccountListWithVerificationCodesRowAccountName</item>
+        <item name="accountListWithVerificationCodesRowVerificationCode">@style/AccountListWithVerificationCodesRowVerificationCode</item>
+        <item name="accountListWithVerificationCodesRowCountdownIndicator">@style/AccountListWithVerificationCodesRowCountdownIndicator</item>
+        <item name="wizardButtonBarStyle">@null</item>
+        <item name="directionalButtonLeftStyle">@style/DirectionalButtonLeft</item>
+        <item name="directionalButtonRightStyle">@style/DirectionalButtonRight</item>
+        <item name="enrollmentWizardDividerHorizontal">?android:attr/dividerHorizontal</item>
+    </style>
+
+    <style name="AuthenticatorTheme.NoTitleBar" parent="AuthenticatorTheme">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="DirectionalButtonLeft">
+        <item name="android:background">@drawable/btn_dir_prev_holo_dark</item>
+        <item name="android:paddingLeft">30.0dip</item>
+    </style>
+
+    <style name="DirectionalButtonRight">
+        <item name="android:background">@drawable/btn_dir_next_holo_dark</item>
+        <item name="android:paddingRight">35.0dip</item>
+    </style>
+
+</resources>

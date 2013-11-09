@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-en-rGB/strings.xml -->
+    <eat-comment />
+
+    <string-array name="type">
+        <item msgid="7456778849112065121">"Time based"</item>
+        <item msgid="5212912099902129712">"Counter based"</item>
+    </string-array>
+
+    <string name="about_preference_screen_title" msgid="8056864904503664711">"About"</string>
+    <string name="about_preference_title" msgid="2797539814683187124">"About"</string>
+    <string name="add_account_menu_item" msgid="6422163385921921789">"Add account"</string>
+    <string name="app_name" msgid="5078996080612406301">"Google Authenticator"</string>
+    <string name="app_name_short" msgid="6268465073167241020">"Authenticator"</string>
+    <string name="button_add_account" msgid="4301500554118934829">"Add an account"</string>
+    <string name="button_add_account_manual_entry" msgid="7234157710472604378">"Add account manually"</string>
+    <string name="button_add_account_scan_barcode" msgid="4400516455038574606">"Scan barcode"</string>
+    <string name="button_back" msgid="414120249698283380">"Back"</string>
+    <string name="button_exit_howitworks_flow" msgid="6789714209015077393">"Exit"</string>
+    <string name="button_how_it_works" msgid="5576563994507351533">"See how it works"</string>
+    <string name="button_next" msgid="2321252361372851972">"Next"</string>
+    <string name="button_uninstall_old_app" msgid="425412851508359894">"Uninstall"</string>
+    <string name="cancel" msgid="5705561042616477184">"Cancel"</string>
+    <string name="check_code" msgid="8970489904648838257">"To check that you have the correct key value for <ns1:g id="ACCOUNT">%1$s</ns1:g>, verify that the value here matches the integrity check value provided by the server:&lt;br/>"</string>
+    <string name="check_code_menu_item" msgid="6851230890695316742">"Check key value"</string>
+    <string name="check_code_title" msgid="6308604727562833139">"Integrity check value"</string>
+    <string name="context_menu_remove_account" msgid="2776049374428247354">"Remove"</string>
+    <string name="copy_to_clipboard" msgid="9220543434521756454">"Copy to clipboard"</string>
+    <string name="counter_pin" msgid="6520222181829297474">"Get code"</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_prompt" msgid="4298949858655509063">"Your data has been successfully imported from the deprecated Google Authenticator app. It is now safe to uninstall the prior version of the app by clicking below."</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_title" msgid="6215126097026112170">"Import succeeded"</string>
+    <string name="decoding_exception" msgid="7778970130063776199">"Decoding exception"</string>
+    <string name="empty_pin" msgid="2123950169339395812">"_ _ _ _ _ _"</string>
+    <string name="enter_account_label" msgid="1488259241384211529">"Enter account name"</string>
+    <string name="enter_key_hint" msgid="480564521423532185">"Enter your key"</string>
+    <string name="enter_key_illegal_char" msgid="5667180343359002748">"Key value has illegal character"</string>
+    <string name="enter_key_page_add_button" msgid="7145413404890383746">"Add"</string>
+    <string name="enter_key_title" msgid="3762128630776563361">"Manual account entry"</string>
+    <string name="enter_key_too_short" msgid="1883571748860519725">"Key value is too short"</string>
+    <string name="enter_pin" msgid="2238539410253130912">"Enter this verification code if prompted during account sign-in:"</string>
+    <string name="error_empty_secret" msgid="1889970426144134666">"Cannot save empty secret"</string>
+    <string name="error_exists" msgid="9037595140877350695">"Sorry, that name is already in use."</string>
+    <string name="error_qr" msgid="1076904454315180481">"Cannot interpret QR code."</string>
+    <string name="error_title" msgid="1784361744549854479">"Error"</string>
+    <string name="error_uri" msgid="8889749448317216536">"Key not recognised."</string>
+    <string name="general_security_exception" msgid="2356961798953009046">"General security exception"</string>
+    <string name="how_it_works_menu_item" msgid="7162080619184257276">"How it works"</string>
+    <string name="howitworks_page_enter_code_details" msgid="2285856515167753320">"This app will generate the code needed to proceed with sign-in."</string>
+    <string name="howitworks_page_enter_code_title" msgid="8720355376154774463">"If you\'re on a new computer, enter a code from your phone."</string>
+    <string name="howitworks_page_enter_password_details" msgid="1637264390208452667">"However, if you\'re at a new computer or device, Google will ask you for a special code to make sure that it\'s really you."</string>
+    <string name="howitworks_page_enter_password_title" msgid="2162365548375599624">"To sign in, you\'ll enter your password."</string>
+    <string name="howitworks_page_verify_device_details" msgid="9198940182976285367">"You can also choose to remember the computer, and Google won\'t ask you for a code there again."</string>
+    <string name="howitworks_page_verify_device_title" msgid="8577354518261339174">"Then you\'re signed in."</string>
+    <string name="install_button" msgid="5395462228740377795">"Install"</string>
+    <string name="install_dialog_message" msgid="4701150232869547399">"To scan barcodes containing keys, you must install the ZXing barcode scanner."</string>
+    <string name="install_dialog_title" msgid="6389833865110438047">"Install barcode scanner?"</string>
+    <string name="main_preference_screen_title" msgid="5971154576421128196">"Settings"</string>
+    <string name="ok" msgid="6406800116409689723">"OK"</string>
+    <string name="opensource_preference_title" msgid="9222719496327822081">"Open-source project"</string>
+    <string name="privacy_preference_title" msgid="5170441521661957179">"Privacy Policy"</string>
+    <string name="remove_account_dialog_button_remove" msgid="1115752492175745669">"Remove account"</string>
+    <string name="remove_account_dialog_message" msgid="5152134907192755352">"Removing this account will &lt;b>remove your ability&lt;/b> to generate codes, however, it will &lt;b>not&lt;/b> turn off 2-factor authentication. This may prevent you from signing into your account. &lt;p> Before removing: &lt;ul> &lt;li>Turn off 2-factor authentication for this account, or&lt;/li> &lt;li>Ensure that you have an alternative mechanism for generating codes.&lt;/li> &lt;/ul>"</string>
+    <string name="remove_account_dialog_title" msgid="3627142692332624397">"Remove <ns1:g id="ACCOUNT">%1$s</ns1:g>?"</string>
+    <string name="remove_google_account_dialog_message" msgid="5734774722876234898">"Removing this account will &lt;b>remove your ability&lt;/b> to generate codes, however, it will &lt;b>not&lt;/b> turn off 2-step verification. This may prevent you from signing into your account. &lt;p> Before removing: &lt;ul> &lt;li>Turn off 2-step verification for this account, or&lt;/li> &lt;li>Ensure that you have an alternative mechanism for generating codes.&lt;/li> &lt;/ul>"</string>
+    <string name="rename" msgid="4407492613148938173">"Rename"</string>
+    <string name="rename_message" msgid="5929955206098259018">"Rename <ns1:g id="ACCOUNT">%1$s</ns1:g>"</string>
+    <string name="save_key_message" msgid="4427138629791380096">"Save key for"</string>
+    <string name="secret_saved" msgid="2201025202465443226">"Secret saved"</string>
+    <string name="settings_menu_item" msgid="3175383868365284896">"Settings"</string>
+    <string name="submit" msgid="1518558163262431303">"Save"</string>
+    <string name="terms_preference_title" msgid="2016562579825643136">"Terms of Service"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-en-rGB/timesync_strings.xml -->
+    <eat-comment />
+
+    <string name="timesync_about_feature_preference_title" msgid="8398618989030576453">"About this feature"</string>
+    <string name="timesync_about_feature_screen_details" msgid="1484703765964566915">"If you press &amp;quot;Sync now&amp;quot;, Authenticator will attempt to sync its internal clock with Google servers once. The device\'s Date &amp; Time settings will not be changed. &lt;p> Authenticator does not transmit any personal data or account information while synchronising its internal clock with Google servers. &lt;p> &lt;b>Why this is useful&lt;/b> &lt;p> Authenticator generates 2-step verification codes based on 1) the current time, and 2) a secret number known to the app and the server. &lt;p> If Authenticator and the server disagree on what time it is, the codes that the app generates may not be accepted when you try to log in. &lt;p> By default Authenticator uses the device\'s Date &amp; Time settings, and in most cases you will be able to generate valid codes by making sure your time, date, and time zone settings are configured correctly. However, when time mismatches do occur, they can be hard to troubleshoot (especially if you use network-provided time or time zones)."</string>
+    <string name="timesync_about_feature_screen_title" msgid="8248453942850581677">"About this feature"</string>
+    <string name="timesync_preference_screen_summary" msgid="4761393049788324525">"Sync Authenticator\'s internal clock with Google servers"</string>
+    <string name="timesync_preference_screen_title" msgid="3022961447302189451">"Time correction for codes"</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_details" msgid="7427576990969917093">"There was a problem contacting Google\'s server. Please check your network settings and try again."</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_title" msgid="3173165623567050563">"Sync Now"</string>
+    <string name="timesync_sync_now_preference_title" msgid="3082679345742875442">"Sync now"</string>
+    <string name="timesync_sync_now_progress_dialog_details" msgid="307085676112612197">"Connecting to server"</string>
+    <string name="timesync_sync_now_progress_dialog_title" msgid="7008645503609657769">"Sync now"</string>
+    <string name="timesync_sync_now_screen_title" msgid="3545642903720968544">"Sync Now"</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_details" msgid="1783578393804196806">"Authenticator\'s internal clock was not adjusted because it appears to already be in sync with Google servers."</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_title" msgid="4771431037030124374">"Time already correct"</string>
+    <string name="timesync_sync_now_time_corrected_dialog_details" msgid="8542304823376488491">"Authenticator\'s internal clock has been adjusted to match the time provided by Google servers. "\n\n"The Date &amp; Time settings on this device have not been changed."</string>
+    <string name="timesync_sync_now_time_corrected_dialog_title" msgid="556836185362910715">"Time corrected"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-en-rGB/strings.xml -->
+    <eat-comment />
+
+    <string name="type_prompt" msgid="5595994960218859859">"Type of key"</string>
+    <string name="version_preference_title" msgid="5388130414499892219">"Version"</string>
+    <string name="welcome_page_details" msgid="3484579068463805365">"2-step verification protects your Google account even if your password is stolen."</string>
+    <string name="welcome_page_title" msgid="1597640810952332788">"Thousands of online accounts are hijacked every day."</string>
+
+</resources>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-hi/strings.xml -->
+    <eat-comment />
+
+    <string-array name="type">
+        <item msgid="7456778849112065121">"समय आधारित"</item>
+        <item msgid="5212912099902129712">"काउंटर आधारित"</item>
+    </string-array>
+
+    <string name="about_preference_screen_title" msgid="8056864904503664711">"बारे में"</string>
+    <string name="about_preference_title" msgid="2797539814683187124">"बारे में"</string>
+    <string name="add_account_menu_item" msgid="6422163385921921789">"खाता जोड़ें"</string>
+    <string name="app_name" msgid="5078996080612406301">"Google प्रमाणक"</string>
+    <string name="app_name_short" msgid="6268465073167241020">"प्रमाणक"</string>
+    <string name="button_add_account" msgid="4301500554118934829">"कोई खाता जोड़ें"</string>
+    <string name="button_add_account_manual_entry" msgid="7234157710472604378">"मैन्‍युअल रूप से खाता जोड़ें"</string>
+    <string name="button_add_account_scan_barcode" msgid="4400516455038574606">"बारकोड स्‍कैन करें"</string>
+    <string name="button_back" msgid="414120249698283380">"वापस जाएं"</string>
+    <string name="button_exit_howitworks_flow" msgid="6789714209015077393">"बाहर निकलें"</string>
+    <string name="button_how_it_works" msgid="5576563994507351533">"देखें कि यह कैसे कार्य करता है"</string>
+    <string name="button_next" msgid="2321252361372851972">"अगला"</string>
+    <string name="button_uninstall_old_app" msgid="425412851508359894">"अनइंस्टॉल करें"</string>
+    <string name="cancel" msgid="5705561042616477184">"रद्द करें"</string>
+    <string name="check_code" msgid="8970489904648838257">"यह जांचने के लिए कि आपके पास <ns1:g id="ACCOUNT">%1$s</ns1:g> का सही कुंजी मान है, सत्यापित करें कि यहां दिया गया मान सर्वर द्वारा प्रदत्त एकीकरण जांच मान से मेल खाता है:&lt;br/>"</string>
+    <string name="check_code_menu_item" msgid="6851230890695316742">"कुंजी मान जांचें"</string>
+    <string name="check_code_title" msgid="6308604727562833139">"एकीकरण जांच मान"</string>
+    <string name="context_menu_remove_account" msgid="2776049374428247354">"निकालें"</string>
+    <string name="copy_to_clipboard" msgid="9220543434521756454">"क्‍लिपबोर्ड पर प्रतिलिपि बनाएं"</string>
+    <string name="counter_pin" msgid="6520222181829297474">"कोड प्राप्त करें"</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_prompt" msgid="4298949858655509063">"आपका डेटा हटाए गए Google प्रमाणक एप्लिकेशन से सफलतापूर्वक आयात कर लिया गया है. अब एप्लिकेशन का पिछला संस्‍करण अनइंस्‍टॉल करना नीचे क्लिक करने के द्वारा आसान हो गया है."</string>
+    <string name="dataimport_import_succeeded_uninstall_dialog_title" msgid="6215126097026112170">"आयात सफल"</string>
+    <string name="decoding_exception" msgid="7778970130063776199">"डीकोडिंग अपवाद"</string>
+    <string name="empty_pin" msgid="2123950169339395812">"_ _ _ _ _ _"</string>
+    <string name="enter_account_label" msgid="1488259241384211529">"खाता नाम दर्ज करें"</string>
+    <string name="enter_key_hint" msgid="480564521423532185">"अपनी कुंजी दर्ज करें"</string>
+    <string name="enter_key_illegal_char" msgid="5667180343359002748">"मूल मान में अमान्य वर्ण हैं"</string>
+    <string name="enter_key_page_add_button" msgid="7145413404890383746">"जोड़ें"</string>
+    <string name="enter_key_title" msgid="3762128630776563361">"मैन्‍युअल खाता प्रविष्टि"</string>
+    <string name="enter_key_too_short" msgid="1883571748860519725">"कुंजी मान बहुत छोटा है"</string>
+    <string name="enter_pin" msgid="2238539410253130912">"खाता साइन-इन के दौरान मांगे जाने पर यह सत्‍यापन कोड दर्ज करें:"</string>
+    <string name="error_empty_secret" msgid="1889970426144134666">"खाली गुप्त कुंजी सहेजी नहीं जा सकती"</string>
+    <string name="error_exists" msgid="9037595140877350695">"क्षमा करें, वह नाम पहले से ही उपयोग में है."</string>
+    <string name="error_qr" msgid="1076904454315180481">"QR कोड की व्‍याख्‍या नहीं की जा सकती."</string>
+    <string name="error_title" msgid="1784361744549854479">"त्रुटि"</string>
+    <string name="error_uri" msgid="8889749448317216536">"कुंजी नहीं पहचानी गई."</string>
+    <string name="general_security_exception" msgid="2356961798953009046">"सामान्‍य सुरक्षा अपवाद"</string>
+    <string name="how_it_works_menu_item" msgid="7162080619184257276">"यह कैसे काम करता है"</string>
+    <string name="howitworks_page_enter_code_details" msgid="2285856515167753320">"यह एप्लिकेशन साइन इन द्वारा आगे बढ़ने के लिए आवश्‍यक कोड जनरेट करेगा."</string>
+    <string name="howitworks_page_enter_code_title" msgid="8720355376154774463">"यदि आप एक नया कंप्यूटर इस्तेमाल कर रहे हैं, तो अपने फोन से एक कोड दर्ज करें."</string>
+    <string name="howitworks_page_enter_password_details" msgid="1637264390208452667">"हालांकि, यदि आप किसी नए कंप्‍यूटर या उपकरण पर हों, तो Google यह सुनिश्चित करने के लिए आपसे कोई विशेष कोड पूछेगा कि वह वास्‍तव में आप ही हैं."</string>
+    <string name="howitworks_page_enter_password_title" msgid="2162365548375599624">"साइन इन करने के लिए, आप अपना पासवर्ड दर्ज करेंगे."</string>
+    <string name="howitworks_page_verify_device_details" msgid="9198940182976285367">"आप कंप्यूटर को याद रखना भी चुन सकते हैं और Google आपसे फिर किसी कोड की मांग नहीं करेगा."</string>
+    <string name="howitworks_page_verify_device_title" msgid="8577354518261339174">"इसके बाद आप साइन इन हो जाते हैं."</string>
+    <string name="install_button" msgid="5395462228740377795">"इंस्‍टॉल करें"</string>
+    <string name="install_dialog_message" msgid="4701150232869547399">"कुंजियों वाले बारकोड स्‍कैन करने के लिए, आपको ZXing बारकोड स्कैनर इंस्‍टॉल करना होगा."</string>
+    <string name="install_dialog_title" msgid="6389833865110438047">"बारकोड स्कैनर इंस्‍टॉल करें?"</string>
+    <string name="main_preference_screen_title" msgid="5971154576421128196">"सेटिंग"</string>
+    <string name="ok" msgid="6406800116409689723">"ठीक"</string>
+    <string name="opensource_preference_title" msgid="9222719496327822081">"मुक्त-स्रोत प्रोजेक्ट"</string>
+    <string name="privacy_preference_title" msgid="5170441521661957179">"गोपनीयता नीति"</string>
+    <string name="remove_account_dialog_button_remove" msgid="1115752492175745669">"खाता निकालें"</string>
+    <string name="remove_account_dialog_message" msgid="5152134907192755352">"इस खाते को निकालने से कोड जनरेट करने की &lt;b>आपकी क्षमता निकाल&lt;/b> दी जाएगी, हालांकि, इससे 2-घटक का प्रमाणीकरण बंद &lt;b>नहीं&lt;/b> होगा. यह आपको अपने खाते में साइन इन करने से रोक सकता है. &lt;p> निकालने से पहले: &lt;ul> &lt;li>इस खाते के लिए 2-घटक का प्रमाणीकरण बंद करें, या&lt;/li> &lt;li>यह सुनिश्चित करें कि आपके पास कोड जनरेट करने के लिए कोई वैकल्पिक तंत्र है.&lt;/li> &lt;/ul>"</string>
+    <string name="remove_account_dialog_title" msgid="3627142692332624397">"<ns1:g id="ACCOUNT">%1$s</ns1:g> निकालें?"</string>
+    <string name="remove_google_account_dialog_message" msgid="5734774722876234898">"इस खाते को निकालने से कोड जनरेट करने की &lt;b>आपकी क्षमता निकाल&lt;/b> दी जाएगी, हालांकि, इससे 2-चरणीय सत्‍यापन बंद &lt;b>नहीं&lt;/b> होगा. यह आपको अपने खाते में साइन इन करने से रोक सकता है. &lt;p> निकालने से पहले: &lt;ul> &lt;li>इस खाते के लिए 2-चरणीय सत्‍यापन बंद करें, या&lt;/li> &lt;li>यह सुनिश्चित करें कि आपके पास कोड जनरेट करने के लिए वैकल्पिक तंत्र है.&lt;/li> &lt;/ul>"</string>
+    <string name="rename" msgid="4407492613148938173">"नाम बदलें"</string>
+    <string name="rename_message" msgid="5929955206098259018">"<ns1:g id="ACCOUNT">%1$s</ns1:g> का नाम बदलें"</string>
+    <string name="save_key_message" msgid="4427138629791380096">"इसके लिए कुंजी सहेजें:"</string>
+    <string name="secret_saved" msgid="2201025202465443226">"गुप्त सहेजा गया"</string>
+    <string name="settings_menu_item" msgid="3175383868365284896">"सेटिंग"</string>
+    <string name="submit" msgid="1518558163262431303">"सहेजें"</string>
+    <string name="terms_preference_title" msgid="2016562579825643136">"सेवा की शर्तें"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-hi/timesync_strings.xml -->
+    <eat-comment />
+
+    <string name="timesync_about_feature_preference_title" msgid="8398618989030576453">"इस सुविधा के बारे में"</string>
+    <string name="timesync_about_feature_screen_details" msgid="1484703765964566915">"यदि आप &amp;quot;अभी समन्वयित करें&amp;quot; दबाते हैं, तो प्रमाणक एक बार Google सर्वर के साथ उसकी आंतरिक घड़ी को समन्वयित करने का प्रयास करेगा. उपकरण की दिनांक और समय सेटिंग नहीं बदलेंगी. &lt;p> प्रमाणक उसकी आंतरिक घड़ी को Google सर्वर के साथ समन्वयित करके कोई भी व्यक्तिगत डेटा या खाता जानकारी स्थानांतरित नहीं करता है. &lt;p> &lt;b>यह क्यों उपयोगी है&lt;/b> &lt;p> प्रमाणक 1) वर्तमान समय, और 2) एप्लिकेशन और सर्वर को ज्ञात गुप्त नंबर के आधार पर 2-चरणीय सत्यापन कोड जनरेट करता है. &lt;p> यदि प्रमाणक और सर्वर इस बात पर असहमत हैं कि समय क्‍या हुआ है, तो हो सकता है कि एप्लिकेशन द्वारा जनरेट किए गए कोड आपके द्वारा लॉग इन करने का प्रयास करते समय स्वीकृत नहीं किए जाएं. &lt;p> प्रमाणक डिफ़ॉल्ट रूप से उपकरण की दिनांक और समय सेटिंग का उपयोग करता है, और अधिकांश स्थितियों में आप यह सुनिश्चित करके मान्य कोड जनरेट कर सकेंगे कि आपकी समय, दिनांक और समय ज़ोन सेटिंग सही तरीके से कॉन्फ़िगर की गई हैं. हालांकि, जब समय का गलत-मिलान होता है, तो उसका समस्‍या निवारण करना कठिन हो सकता है (विशेष रूप से यदि आप नेटवर्क द्वारा उपलब्ध कराए गए समय या समय ज़ोन का उपयोग करते हैं)."</string>
+    <string name="timesync_about_feature_screen_title" msgid="8248453942850581677">"इस सुविधा के बारे में"</string>
+    <string name="timesync_preference_screen_summary" msgid="4761393049788324525">"Google सर्वर के साथ प्रमाणक की आंतरिक घड़ी समन्वयित करें"</string>
+    <string name="timesync_preference_screen_title" msgid="3022961447302189451">"कोड के लिए समय सुधार"</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_details" msgid="7427576990969917093">"Google के सर्वर से संपर्क करने में कोई समस्या थी. कृपया अपनी नेटवर्क सेटिंग जांचें और पुनः प्रयास करें."</string>
+    <string name="timesync_sync_now_connectivity_error_dialog_title" msgid="3173165623567050563">"अभी समन्वयित करें"</string>
+    <string name="timesync_sync_now_preference_title" msgid="3082679345742875442">"अभी समन्वयित करें"</string>
+    <string name="timesync_sync_now_progress_dialog_details" msgid="307085676112612197">"सर्वर से कनेक्ट हो रहा है…"</string>
+    <string name="timesync_sync_now_progress_dialog_title" msgid="7008645503609657769">"अभी समन्वयित करें"</string>
+    <string name="timesync_sync_now_screen_title" msgid="3545642903720968544">"अभी समन्वयित करें"</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_details" msgid="1783578393804196806">"प्रमाणक की आंतरिक घड़ी समायोजित नहीं की गई क्योंकि ऐसा लगता है कि वह पहले से ही Google सर्वर के साथ समन्वयित है."</string>
+    <string name="timesync_sync_now_time_already_correct_dialog_title" msgid="4771431037030124374">"समय पहले से ही सही है"</string>
+    <string name="timesync_sync_now_time_corrected_dialog_details" msgid="8542304823376488491">"प्रमाणक की आंतरिक घड़ी को Google सर्वर द्वारा उपलब्ध कराए गए समय से मिलान करने के लिए समायोजित किया गया है. "\n\n" इस उपकरण की दिनांक और समय सेटिंग बदली नहीं गई हैं."</string>
+    <string name="timesync_sync_now_time_corrected_dialog_title" msgid="556836185362910715">"समय सही कर दिया गया है"</string>
+    <!-- From: file:/C:/Users/Eric/Documents/GitHub/knock-factor-authentication/KnockFactor/res/values-hi/strings.xml -->
+    <eat-comment />
+
+    <string name="type_prompt" msgid="5595994960218859859">"कुंजी का प्रकार"</string>
+    <string name="version_preference_title" msgid="5388130414499892219">"संस्करण"</string>
+    <string name="welcome_page_details" msgid="3484579068463805365">"2-चरणीय सत्‍यापन आपका पासवर्ड चोरी हो जाने की स्थिति में भी आपके Google खाते की सुरक्षा करता है."</string>
+    <string name="welcome_page_title" msgid="1597640810952332788">"प्रतिदिन हज़ारों ऑनलाइन खाते अपहृत हो जाते हैं."</string>
+
+</resources>
