@@ -24,13 +24,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -234,6 +233,8 @@ public class AuthenticatorActivity extends TestableActivity {
     private static final int SELECTED_PAIR = 2;
 
     public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
+    public static final String PREFS_NAME = "com.knockfactor.prefs";
+    public static final String PREF_MAC = "com.knockfactor.prefs.mac";
 
     private KnockEventListener knockListener;
     private Intent mServiceIntent;
@@ -973,7 +974,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     // Add the name and address to an array adapter to show in a ListView
                     if (device.getAddress().equals(selected)) {
-                        new ConnectThread(mBluetoothAdapter, device, mHandler, mUsers).start();
+                        new ConnectThread(this, mBluetoothAdapter, device, mHandler, mUsers).start();
 
                         Toast.makeText(this, "connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
 
@@ -1434,14 +1435,16 @@ public class AuthenticatorActivity extends TestableActivity {
         private final BluetoothAdapter mBluetoothAdapter;
         private final Handler mHandler;
         private final PinInfo[] mUsers;
+        private final Context mContext;
 
-        public ConnectThread(BluetoothAdapter bluetoothAdapter, BluetoothDevice device, Handler handler, PinInfo[] users) {
+        public ConnectThread(Context context, BluetoothAdapter bluetoothAdapter, BluetoothDevice device, Handler handler, PinInfo[] users) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
             BluetoothSocket tmp = null;
             mmDevice = device;
             mHandler = handler;
             mUsers = users;
+            mContext = context;
             mBluetoothAdapter = bluetoothAdapter;
 
             // Get a BluetoothSocket to connect with the given BluetoothDevice
@@ -1469,7 +1472,7 @@ public class AuthenticatorActivity extends TestableActivity {
             }
 
             // Do work to manage the connection (in a separate thread)
-            manageConnectedSocket(mHandler, mmSocket, mUsers);
+            manageConnectedSocket(mContext, mHandler, mmSocket, mUsers);
         }
 
         /** Will cancel an in-progress connection, and close the socket */
@@ -1480,12 +1483,12 @@ public class AuthenticatorActivity extends TestableActivity {
         }
     }
 
-    private static void manageConnectedSocket(Handler handler, BluetoothSocket socket, PinInfo[] users) {
-        new ConnectedThread(handler, socket, users).start();
+    private static void manageConnectedSocket(Context context, Handler handler, BluetoothSocket socket, PinInfo[] users) {
+        new ConnectedThread(context, handler, socket, users).start();
     }
 
     private void manageConnectedSocket(BluetoothSocket socket) {
-        mConnected = new ConnectedThread(mHandler, socket, mUsers);
+        mConnected = new ConnectedThread(this, mHandler, socket, mUsers);
         mConnected.start();
     }
 
@@ -1523,7 +1526,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    manageConnectedSocket(mHandler, socket, mUsers);
+                    manageConnectedSocket(mContext, mHandler, socket, mUsers);
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
@@ -1549,7 +1552,7 @@ public class AuthenticatorActivity extends TestableActivity {
         private final Handler mHandler;
         private final PinInfo[] mUsers;
 
-        public ConnectedThread(Handler handler, BluetoothSocket socket, PinInfo[] users) {
+        public ConnectedThread(Context context, Handler handler, BluetoothSocket socket, PinInfo[] users) {
             mHandler = handler;
             mUsers = users;
 
@@ -1565,6 +1568,8 @@ public class AuthenticatorActivity extends TestableActivity {
             } catch (IOException e) {
                 Log.w("Knock Factor", "Could not create streams.");
             }
+
+            saveMAC(context, socket.getRemoteDevice().getAddress());
 
             mHandler.obtainMessage(MESSAGE_CONNECT).sendToTarget();
 
@@ -1622,6 +1627,36 @@ public class AuthenticatorActivity extends TestableActivity {
                 mHandler.obtainMessage(MESSAGE_DISCONNECT)
                         .sendToTarget();
             } catch (IOException e) { }
+        }
+    }
+
+    private static void saveMAC(Context context, String mac) {
+        // We need an Editor object to make preference changes.
+        // All objects are from android.context.Context
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(PREF_MAC, mac);
+
+        // Commit the edits!
+        editor.commit();
+    }
+
+    private static String getMAC(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+        return settings.getString(PREF_MAC, "");
+    }
+
+    private static BluetoothDevice getPairedDevice(BluetoothAdapter bluetoothAdapter, String mac) {
+        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                if (device.getAddress().equals(mac)) {
+                    return device;
+                }
+            }
         }
     }
 }
