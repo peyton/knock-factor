@@ -380,7 +380,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
-                mAccept = new AcceptThread(this, mHandler, mBluetoothAdapter, mUsers);
+                mAccept = new AcceptThread(getApplicationContext(), mHandler, mBluetoothAdapter, mUsers);
                 mAccept.start();
             }
 //            Intent discoverableIntent = new
@@ -974,7 +974,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     // Add the name and address to an array adapter to show in a ListView
                     if (device.getAddress().equals(selected)) {
-                        new ConnectThread(this, mBluetoothAdapter, device, mHandler, mUsers).start();
+                        new ConnectThread(getApplicationContext, mBluetoothAdapter, device, mHandler, mUsers).start();
 
                         Toast.makeText(this, "connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
 
