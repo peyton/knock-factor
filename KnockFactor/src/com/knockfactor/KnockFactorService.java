@@ -12,7 +12,7 @@ public class KnockFactorService extends IntentService {
 
     @Override
     public void onCreate() {
-        Log.v("knockListener", "service");
+        super.onCreate();
         knockListener = new KnockEventListener((SensorManager)this.getSystemService(SENSOR_SERVICE));
     }
 
@@ -23,7 +23,7 @@ public class KnockFactorService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         // doesn't really handle given intent bc always the same?
-        Log.v("knockListener", "onHandleIntent");
+        Log.v("knockListener", "onHandleIntent " + knockListener.knockDetected);
         Intent localIntent = new Intent().putExtra(STATUS, knockListener.knockDetected);
         sendBroadcast(localIntent);
     }

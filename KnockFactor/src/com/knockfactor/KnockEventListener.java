@@ -1,5 +1,7 @@
 package com.knockfactor;
 
+import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -42,11 +44,9 @@ public class KnockEventListener implements SensorEventListener {
 
         if (diffZ > 2) {
             knockDetected = true;
-            /*
-            Log.v("knockListener", "prevZ " + prevZ);
-            Log.v("knockListener", "currZ " + currZ);
-            Log.v("knockListener", "" + diffZ);
-            */
+            // Log.v("knockListener", "prevZ " + prevZ);
+            // Log.v("knockListener", "currZ " + currZ);
+            Log.v("knockListener", "diffZ" + diffZ);
         }
     }
 

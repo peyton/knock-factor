@@ -23,6 +23,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -223,7 +224,7 @@ public class AuthenticatorActivity extends TestableActivity {
 
     public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
 
-    // private KnockEventListener knockListener;
+    private KnockEventListener knockListener;
     private Intent mServiceIntent;
     KnockFactorReceiver mKnockFactorReceiver;
     private static final UUID OUR_UUID = UUID.fromString("d749856c-5143-48fe-8b86-35e4494bd073");
@@ -235,7 +236,6 @@ public class AuthenticatorActivity extends TestableActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.v("knockListener", "authenticator");
 
         mAccountDb = DependencyInjector.getAccountDb();
@@ -334,11 +334,13 @@ public class AuthenticatorActivity extends TestableActivity {
 //            startActivity(discoverableIntent);
         }
 
-        // knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
+        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
+        /*
         mServiceIntent = new Intent(this, KnockFactorService.class);
         startService(mServiceIntent);
+        */
+        mKnockFactorReceiver = new KnockFactorReceiver();
         IntentFilter defaultIntentFilter = new IntentFilter("DEFAULT");
-        // LocalBroadcastManager.getInstance(this).registerReceiver(mKnockFactorReceiver, defaultIntentFilter);
         registerReceiver(mKnockFactorReceiver, defaultIntentFilter);
     }
 
@@ -407,6 +409,7 @@ public class AuthenticatorActivity extends TestableActivity {
         stopTotpCountdownTask();
 
         super.onStop();
+        unregisterReceiver(mKnockFactorReceiver);
         // knockListener.pauseListener();
     }
 
@@ -1428,4 +1431,21 @@ public class AuthenticatorActivity extends TestableActivity {
             } catch (IOException e) { }
         }
     }
+
+    private class KnockFactorReceiver extends BroadcastReceiver {
+
+        private KnockFactorReceiver() {
+            // prevents instantiation by other packages
+            Log.v("knockListener", "start receiver");
+        }
+
+        public void onReceive(Context context, Intent intent) {
+            Log.v("knockListener", "receiving");
+            if (intent.getBooleanExtra(KnockFactorService.STATUS, false)) {
+                Log.v("knockListener", "onReceive, knock detected");
+                Toast.makeText(context, "knock detected", Toast.LENGTH_LONG);
+            }
+        }
+    }
+
 }
