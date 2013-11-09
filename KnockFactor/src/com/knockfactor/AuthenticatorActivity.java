@@ -392,7 +392,7 @@ public class AuthenticatorActivity extends TestableActivity {
         Log.i(getString(R.string.app_name), LOCAL_TAG + ": onResume");
 
         importDataFromOldAppIfNecessary();
-        knockListener.resumeListener();
+        // knockListener.resumeListener();
     }
 
     @Override
@@ -400,7 +400,7 @@ public class AuthenticatorActivity extends TestableActivity {
         stopTotpCountdownTask();
 
         super.onStop();
-        knockListener.pauseListener();
+        // knockListener.pauseListener();
     }
 
     private void updateCodesAndStartTotpCountdownTask() {
