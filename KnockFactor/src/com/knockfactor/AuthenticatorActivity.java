@@ -217,12 +217,16 @@ public class AuthenticatorActivity extends TestableActivity {
     // @VisibleForTesting
     static final int SCAN_REQUEST = 31337;
 
-    private static final int MESSAGE_READ = 2;
+    private static final int MESSAGE_READ = 3;
     private static final int MESSAGE_CONNECT = 1;
+    private static final int MESSAGE_DISCONNECT = 2;
+
+    private Menu mMenu;
 
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
     private ConnectedThread mConnected;
+    private AcceptThread mAccept;
 
     private final static int REQUEST_ENABLE_BT = 1;
     private static final int SELECTED_PAIR = 2;
@@ -337,12 +341,16 @@ public class AuthenticatorActivity extends TestableActivity {
                             Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_SHORT).show();
 
                             for (PinInfo info : mUsers) {
-                                if (info.user.toLowerCase().contains(contents)) {
+                                if (info.user.toLowerCase().contains(contents.toLowerCase())) {
                                     mConnected.write(info.pin.getBytes());
 
                                     Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
+
+                                    return;
                                 }
                             }
+
+                            Log.w("Knock Factor", "user not found: " + contents);
                         } catch (UnsupportedEncodingException e) {
                             Log.w("Knock Factor", "Bad encoding!");
                         }
@@ -350,6 +358,15 @@ public class AuthenticatorActivity extends TestableActivity {
                         break;
                     case MESSAGE_CONNECT:
                         Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
+                        MenuItem menuItem = mMenu.findItem(R.id.connect);
+                        menuItem.setTitle(getResources().getString(R.string.disconnect));
+
+                        break;
+
+                    case MESSAGE_DISCONNECT:
+                        Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
+                        MenuItem item = mMenu.findItem(R.id.connect);
+                        item.setTitle(getResources().getString(R.string.connect_menu_item));
 
                         break;
                 }
@@ -369,7 +386,8 @@ public class AuthenticatorActivity extends TestableActivity {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
-                new AcceptThread().start();
+                mAccept = new AcceptThread();
+                mAccept.start();
             }
 //            Intent discoverableIntent = new
 //                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -884,6 +902,9 @@ public class AuthenticatorActivity extends TestableActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        mMenu = menu;
+
         return true;
     }
 
@@ -895,6 +916,26 @@ public class AuthenticatorActivity extends TestableActivity {
                 return true;
             case R.id.paired_devices:
                 showPairedDevices();
+                return true;
+            case R.id.connect:
+                if (item.getTitle().equals(getResources().getString(R.string.connect_menu_item))) {
+                    if (mConnected != null) {
+                        mConnected.cancel();
+                    }
+
+                    if (mAccept != null) {
+                        mAccept.cancel();
+                        mAccept = null;
+                    }
+
+                    mAccept = new AcceptThread();
+                    mAccept.start();
+                } else {
+                    if (mConnected != null) {
+                        mConnected.cancel();
+                    }
+                }
+
                 return true;
             case R.id.settings:
                 showSettings();
@@ -924,7 +965,7 @@ public class AuthenticatorActivity extends TestableActivity {
                     if (device.getAddress().equals(selected)) {
                         new ConnectThread(device).start();
 
-                        Toast.makeText(this, "connecting to " + selected, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
 
                         break;
                     }
@@ -1527,6 +1568,10 @@ public class AuthenticatorActivity extends TestableActivity {
         public void cancel() {
             try {
                 mmSocket.close();
+
+                // Send the obtained bytes to the UI activity
+                mHandler.obtainMessage(MESSAGE_DISCONNECT)
+                        .sendToTarget();
             } catch (IOException e) { }
         }
     }

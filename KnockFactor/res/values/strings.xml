@@ -324,6 +324,8 @@
   </string>
 
     <string name="bluetooth_menu_item">Paired Devices</string>
+    <string name="connect_menu_item">Wait</string>
+    <string name="disconnect">Disconnect</string>
     <string name="action_settings">Settings</string>
 
 </resources>

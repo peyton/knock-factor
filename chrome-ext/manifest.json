@@ -1,12 +1,19 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
-  "name": "One-click Kittens",
-  "description": "This extension demonstrates a browser action with kittens.",
+  "name": "KnockKnock Two-Factor",
+  "description": "Change the way Two-Factor is done. Knock knock.",
   "version": "1.0",
+  "minimum_chrome_version" : "30",
 
   "permissions": [
-    {"bluetooth": [{"uuid": "be4152a0-4920-11e3-8f96-0800200c9a66"}]}
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches" : ["https://www.facebook.com/*", "https://www.dropbox.com/*"],
+      "js": ["jquery-1.10.2.min.js", "popup.js"]
+    }
   ],
   "browser_action": {
     "default_icon": "icon.png",
