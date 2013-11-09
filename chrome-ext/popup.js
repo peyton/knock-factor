@@ -27,10 +27,16 @@ var twoFactor = {
       var link = document.createElement('a');
       var url_full = tab.url;
       link.href = tab.url;
+      console.log(link.hostname);
       var hostname = link.hostname;
-      var first = hostname.indexOf(".");
-      var last = hostname.lastIndexOf(".");
-      var host_f = hostname.substring(first + 1, last);
+      var host_f = '';
+      if (hostname.indexOf("dropbox") != -1) {
+        host_f = "dropbox"; 
+      } else if (hostname.indexOf("github") != -1) {
+        host_f = "github";
+      } else if (hostname.indexOf("mail.google") != -1) {
+        host_f = "mail.google";
+      }
       that.pollKnocked(host_f);
     });
   },
@@ -76,9 +82,15 @@ var twoFactor = {
               console.log("correct");
               chrome.tabs.executeScript({
                 code:
-                  'console.log("hello"); $("input#code").val("' + data.trim() + '");$("#twofactor-confirm").submit();'
+                  '$("input#code").val("' + data.trim() + '");$("#twofactor-confirm").submit();'
               });
               break;
+            case "github":
+              console.log("correct");
+              chrome.tabs.executeScript({
+                code:
+                  '$("input[name="otp"]).val("' + data.trim() + '");$("button[type="submit"]").submit();'
+              });
             default:
               console.log("break");
               break;
