@@ -24,11 +24,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -233,8 +235,11 @@ public class AuthenticatorActivity extends TestableActivity {
 
     public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
 
-    private static final UUID OUR_UUID = UUID.fromString("d749856c-5143-48fe-8b86-35e4494bd073");
     private KnockEventListener knockListener;
+    private Intent mServiceIntent;
+    // KnockFactorReceiver mKnockFactorReceiver;
+    private static final UUID OUR_UUID = UUID.fromString("d749856c-5143-48fe-8b86-35e4494bd073");
+
 
     /**
      * Called when the activity is first created.
@@ -242,7 +247,6 @@ public class AuthenticatorActivity extends TestableActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.v("knockListener", "authenticator");
 
         mAccountDb = DependencyInjector.getAccountDb();
@@ -395,6 +399,12 @@ public class AuthenticatorActivity extends TestableActivity {
 //            startActivity(discoverableIntent);
         }
 
+        /*
+        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
+        mServiceIntent = new Intent(this, KnockFactorService.class);
+        startService(mServiceIntent);
+        */
+
         knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE)) {
 
             @Override
@@ -403,6 +413,10 @@ public class AuthenticatorActivity extends TestableActivity {
 
                 if (this.knockDetected) {
                     Log.w("Knock Factor", "knock? " + this.knockDetected);
+
+                    mServiceIntent = new Intent(AuthenticatorActivity.this, KnockFactorService.class);
+                    mServiceIntent.putExtra("STATUS", this.knockDetected);
+                    startService(mServiceIntent);
 
                     if (mConnected != null) {
                         mConnected.write("knocked".getBytes());
@@ -471,6 +485,7 @@ public class AuthenticatorActivity extends TestableActivity {
         Log.i(getString(R.string.app_name), LOCAL_TAG + ": onResume");
 
         importDataFromOldAppIfNecessary();
+        // knockListener.resumeListener();
     }
 
     @Override
@@ -478,6 +493,8 @@ public class AuthenticatorActivity extends TestableActivity {
         stopTotpCountdownTask();
 
         super.onStop();
+        // unregisterReceiver(mKnockFactorReceiver);
+        // knockListener.pauseListener();
     }
 
     private void updateCodesAndStartTotpCountdownTask() {

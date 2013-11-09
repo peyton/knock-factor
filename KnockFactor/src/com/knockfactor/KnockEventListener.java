@@ -1,5 +1,7 @@
 package com.knockfactor;
 
+import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,9 +19,12 @@ public class KnockEventListener implements SensorEventListener {
 
     KnockEventListener(SensorManager sm) {
         mSensorManager = sm;
-        mAcceleromator = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(this, mAcceleromator, SensorManager.SENSOR_DELAY_NORMAL);
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            mAcceleromator = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        } else {
 
+        }
+        mSensorManager.registerListener(this, mAcceleromator, SensorManager.SENSOR_DELAY_NORMAL);
 
         // initialize values
         currZ = 0;
@@ -39,16 +44,22 @@ public class KnockEventListener implements SensorEventListener {
 
         if (diffZ > 2) {
             knockDetected = true;
-            /*
-            Log.v("knockListener", "prevZ " + prevZ);
-            Log.v("knockListener", "currZ " + currZ);
-            Log.v("knockListener", "" + diffZ);
-            */
+            // Log.v("knockListener", "prevZ " + prevZ);
+            // Log.v("knockListener", "currZ " + currZ);
+            Log.v("knockListener", "diffZ" + diffZ);
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    public void pauseListener() {
+        mSensorManager.unregisterListener(this);
+    }
+
+    public void resumeListener() {
+        mSensorManager.registerListener(this, mAcceleromator, SensorManager.SENSOR_DELAY_NORMAL);
     }
 }
