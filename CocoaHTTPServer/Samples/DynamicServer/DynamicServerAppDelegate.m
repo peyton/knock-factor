@@ -15,8 +15,9 @@
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 
 @interface DynamicServerAppDelegate () {
-    IOBluetoothRFCOMMChannel *mRFCOMMChannel;
-    IOBluetoothDevice *device;
+    IOBluetoothRFCOMMChannel *_mRFCOMMChannel;
+    IOBluetoothDevice *_device;
+    void (^_receiveCallback)(NSString *);
 }
 
 @end
@@ -93,8 +94,8 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
         [self log: @"Error - no selected device.  ***This should never happen.***\n" ];
         return;
     }
-    device = [deviceArray objectAtIndex:0];
-    IOBluetoothSDPServiceRecord     *sppServiceRecord = [device getServiceRecordForUUID:sppServiceUUID];
+    _device = [deviceArray objectAtIndex:0];
+    IOBluetoothSDPServiceRecord     *sppServiceRecord = [_device getServiceRecordForUUID:sppServiceUUID];
     if ( sppServiceRecord == nil ) {
         [self log: @"Error - no spp service in selected device.  ***This should never happen since the selector forces the user to select only devices with spp.***\n" ];
         return;
@@ -107,7 +108,7 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
     }
     
     // Open asyncronously the rfcomm channel when all the open sequence is completed my implementation of "rfcommChannelOpenComplete:" will be called.
-    if ( ( [device openRFCOMMChannelAsync:&chan withChannelID:rfcommChannelID delegate:self] != kIOReturnSuccess ) && ( chan != nil ) ) {
+    if ( ( [_device openRFCOMMChannelAsync:&chan withChannelID:rfcommChannelID delegate:self] != kIOReturnSuccess ) && ( chan != nil ) ) {
         // Something went bad (looking at the error codes I can also say what, but for the moment let's not dwell on
         // those details). If the device connection is left open close it and return an error:
         [self log: @"Error - open sequence failed.***\n" ];
@@ -115,7 +116,7 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
         return;
     }
     
-    mRFCOMMChannel = chan;
+    _mRFCOMMChannel = chan;
     
 }
 
@@ -143,6 +144,11 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
         self.knocked = YES;
     else
         self.passstring = message;
+    
+    if (_receiveCallback && ![message isEqualToString:@"knocked"]) {
+        _receiveCallback(message);
+        _receiveCallback = nil;
+    }
 }
 
 -(void)sendMessage:(NSString *)message
@@ -150,16 +156,22 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
     [self log:@"Sending Message"];
     [self log:message];
     NSData *dataToSend = [message dataUsingEncoding:NSUTF8StringEncoding];
-    [mRFCOMMChannel writeSync:(void*)dataToSend.bytes length:dataToSend.length];
+    [_mRFCOMMChannel writeSync:(void*)dataToSend.bytes length:dataToSend.length];
+}
+
+- (void)sendMessage:(NSString *)message callback:(void (^)(NSString *))callback;
+{
+    _receiveCallback = callback;
+    [self sendMessage:message];
 }
 
 - (IBAction)close:(id)sender;
 {
     [self log:@"Closing"];
-    [mRFCOMMChannel closeChannel];
-    mRFCOMMChannel = nil;
-    [device closeConnection];
-    device = nil;
+    [_mRFCOMMChannel closeChannel];
+    _mRFCOMMChannel = nil;
+    [_device closeConnection];
+    _device = nil;
 }
 
 - (void)log:(NSString *)msg;

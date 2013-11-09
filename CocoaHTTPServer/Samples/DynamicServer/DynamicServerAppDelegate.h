@@ -20,4 +20,6 @@
 
 -(void)sendMessage:(NSString *)message;
 
+- (void)sendMessage:(NSString *)message callback:(void (^)(NSString *))callback;
+
 @end
