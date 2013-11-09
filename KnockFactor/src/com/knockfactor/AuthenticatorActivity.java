@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -29,11 +30,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Color;
+import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.Vibrator;
 import android.text.ClipboardManager;
 import android.text.Html;
@@ -69,7 +72,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -212,10 +217,12 @@ public class AuthenticatorActivity extends TestableActivity {
     // @VisibleForTesting
     static final int SCAN_REQUEST = 31337;
 
-    private static final int MESSAGE_READ = 1;
+    private static final int MESSAGE_READ = 2;
+    private static final int MESSAGE_CONNECT = 1;
 
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
+    private ConnectedThread mConnected;
 
     private final static int REQUEST_ENABLE_BT = 1;
     private static final int SELECTED_PAIR = 2;
@@ -314,15 +321,55 @@ public class AuthenticatorActivity extends TestableActivity {
 
         mHandler = new Handler(Looper.getMainLooper()) {
 
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+
+                switch (msg.what) {
+                    case MESSAGE_READ:
+                        int bytes = msg.arg1;
+                        byte[] buffer = (byte[]) msg.obj;
+                        byte[] message = Arrays.copyOf(buffer, bytes);
+
+                        try {
+                            String contents = new String(message, "UTF-8");
+
+                            Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_SHORT).show();
+
+                            for (PinInfo info : mUsers) {
+                                if (info.user.toLowerCase().contains(contents)) {
+                                    mConnected.write(info.pin.getBytes());
+
+                                    Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
+                                }
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            Log.w("Knock Factor", "Bad encoding!");
+                        }
+
+                        break;
+                    case MESSAGE_CONNECT:
+                        Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
+
+                        break;
+                }
+            }
+
+            @Override
+            public void dispatchMessage(Message msg) {
+                super.dispatchMessage(msg);
+            }
         };
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
-            Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG);
+            Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG).show();
         } else {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            } else {
+                new AcceptThread().start();
             }
 //            Intent discoverableIntent = new
 //                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -330,7 +377,23 @@ public class AuthenticatorActivity extends TestableActivity {
 //            startActivity(discoverableIntent);
         }
 
-        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
+        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE)) {
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                super.onSensorChanged(event);
+
+                if (this.knockDetected) {
+                    Log.w("Knock Factor", "knock? " + this.knockDetected);
+
+                    if (mConnected != null) {
+                        mConnected.write("knocked".getBytes());
+                    }
+                }
+
+                this.knockDetected = false;
+            }
+        };
     }
 
     /**
@@ -1361,7 +1424,53 @@ public class AuthenticatorActivity extends TestableActivity {
     }
 
     private void manageConnectedSocket(BluetoothSocket socket) {
-        new ConnectedThread(socket).start();
+        mConnected = new ConnectedThread(socket);
+        mConnected.start();
+    }
+
+    private class AcceptThread extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+
+        public AcceptThread() {
+            // Use a temporary object that is later assigned to mmServerSocket,
+            // because mmServerSocket is final
+            BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code
+                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(getResources().getString(R.string.app_name), OUR_UUID);
+            } catch (IOException e) { }
+            mmServerSocket = tmp;
+        }
+
+        public void run() {
+            BluetoothSocket socket = null;
+            // Keep listening until exception occurs or a socket is returned
+            while (true) {
+                try {
+                    socket = mmServerSocket.accept();
+                } catch (IOException e) {
+                    break;
+                }
+                // If a connection was accepted
+                if (socket != null) {
+                    // Do work to manage the connection (in a separate thread)
+                    manageConnectedSocket(socket);
+                    try {
+                        mmServerSocket.close();
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Could not close socket!", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+            }
+        }
+
+        /** Will cancel the listening socket, and cause the thread to finish */
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) { }
+        }
     }
 
     private class ConnectedThread extends Thread {
@@ -1379,7 +1488,11 @@ public class AuthenticatorActivity extends TestableActivity {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                Log.w("Knock Factor", "Could not create streams.");
+            }
+
+            mHandler.obtainMessage(MESSAGE_CONNECT).sendToTarget();
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
