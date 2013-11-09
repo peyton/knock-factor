@@ -1,16 +1,28 @@
 package com.knockfactor;
 
 import android.app.IntentService;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Handler;
+
+import com.knockfactor.testability.DependencyInjector;
 
 public class KnockFactorService extends IntentService {
 
     public static final String STATUS = "com.knockfactor.knockfactorservice.STATUS";
 
+    private AuthenticatorActivity.ConnectThread ConnectThread;
+    private AccountDb mAccountDb;
+    private BluetoothAdapter mBTAdapter;
+    private AuthenticatorActivity.PinInfo[] mUsers;
+    private OtpSource mOtpSource;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        mAccountDb = DependencyInjector.getAccountDb();
+        mOtpSource = DependencyInjector.getOtpProvider();
+        mUsers = AuthenticatorActivity.getUsers(mAccountDb, mOtpSource);
     }
 
     public KnockFactorService () {
@@ -20,6 +32,11 @@ public class KnockFactorService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         boolean knockDetected = intent.getBooleanExtra("STATUS", false);
-        Log.v("knockListener", "onHandleIntent " + knockDetected);
+        if (knockDetected) {
+            ConnectThread = new AuthenticatorActivity.ConnectThread(getApplicationContext(), mBTAdapter,
+                    AuthenticatorActivity.getPairedDevice(mBTAdapter, AuthenticatorActivity.getMAC(this)),
+                    new Handler(), mUsers);
+
+        }
     }
 }

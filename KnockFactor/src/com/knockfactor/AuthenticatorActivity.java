@@ -1238,7 +1238,7 @@ public class AuthenticatorActivity extends TestableActivity {
      *
      * @author adhintz@google.com (Drew Hintz)
      */
-    private static class PinInfo {
+    public static class PinInfo {
         private String pin; // calculated OTP, or a placeholder if not calculated
         private String user;
         private boolean isHotp = false; // used to see if button needs to be displayed
@@ -1457,7 +1457,7 @@ public class AuthenticatorActivity extends TestableActivity {
         }
     }
 
-    private static class ConnectThread extends Thread {
+    public static class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
         private final BluetoothAdapter mBluetoothAdapter;
@@ -1669,12 +1669,12 @@ public class AuthenticatorActivity extends TestableActivity {
         editor.commit();
     }
 
-    private static String getMAC(Context context) {
+    public static String getMAC(Context context) {
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         return settings.getString(PREF_MAC, "");
     }
 
-    private static BluetoothDevice getPairedDevice(BluetoothAdapter bluetoothAdapter, String mac) {
+    public static BluetoothDevice getPairedDevice(BluetoothAdapter bluetoothAdapter, String mac) {
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
         // If there are paired devices
         if (pairedDevices.size() > 0) {
