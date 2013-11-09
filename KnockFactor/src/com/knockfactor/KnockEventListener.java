@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 public class KnockEventListener implements SensorEventListener {
@@ -19,6 +20,7 @@ public class KnockEventListener implements SensorEventListener {
 
     final int timeframe = 1000; // milliseconds
     private int numKnocks = 0;
+    private CountDownTimer mCountDownTimer;
 
     KnockEventListener(SensorManager sm) {
         mSensorManager = sm;
@@ -46,10 +48,13 @@ public class KnockEventListener implements SensorEventListener {
         diffZ = Math.abs(currZ - prevZ);
 
         if (numKnocks == 1 && diffZ > 2) {
+            // second knock
             knockDetected = true;
             numKnocks = 0;
         } else if (diffZ > 2) {
+            // first knock
             numKnocks++;
+
             // Log.v("knockListener", "prevZ " + prevZ);
             // Log.v("knockListener", "currZ " + currZ);
             Log.v("knockListener", "diffZ" + diffZ);
