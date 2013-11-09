@@ -70,6 +70,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -221,6 +222,7 @@ public class AuthenticatorActivity extends TestableActivity {
 
     public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
 
+    private static final UUID OUR_UUID = UUID.fromString("d749856c-5143-48fe-8b86-35e4494bd073");
     private KnockEventListener knockListener;
 
     /**
@@ -318,10 +320,14 @@ public class AuthenticatorActivity extends TestableActivity {
             // Device does not support Bluetooth
             Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG);
         } else {
-            Intent discoverableIntent = new
-                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(discoverableIntent);
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+//            Intent discoverableIntent = new
+//                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+//            startActivity(discoverableIntent);
         }
 
         knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
@@ -845,7 +851,22 @@ public class AuthenticatorActivity extends TestableActivity {
             interpretScanResult(uri, false);
         } else if (requestCode == SELECTED_PAIR && resultCode == Activity.RESULT_OK) {
             String selected = (intent != null) ? intent.getStringExtra(EXTRA_SELECTED) : null;
-            Toast.makeText(this, selected, Toast.LENGTH_SHORT);
+
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            // If there are paired devices
+            if (pairedDevices.size() > 0) {
+                // Loop through paired devices
+                for (BluetoothDevice device : pairedDevices) {
+                    // Add the name and address to an array adapter to show in a ListView
+                    if (device.getAddress().equals(selected)) {
+                        new ConnectThread(device).start();
+
+                        Toast.makeText(this, "connecting to " + selected, Toast.LENGTH_SHORT).show();
+
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -1306,7 +1327,7 @@ public class AuthenticatorActivity extends TestableActivity {
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
-                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(getResources().getString(R.string.app_name)));
+                tmp = device.createRfcommSocketToServiceRecord(OUR_UUID);
             } catch (IOException e) { }
             mmSocket = tmp;
         }

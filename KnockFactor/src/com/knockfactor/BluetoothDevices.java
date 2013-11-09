@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,23 +15,44 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.knockfactor2.R;
 
 import java.util.Set;
 
-public class BluetoothDevices extends Activity implements AdapterView.OnItemSelectedListener {
+public class BluetoothDevices extends Activity implements AdapterView.OnItemClickListener {
 
     private BluetoothAdapter mBluetoothAdapter;
-    private ArrayAdapter<String> mArrayAdapter;
+    private ArrayAdapter<BluetoothDevice> mArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_devices);
 
-        mArrayAdapter = new ArrayAdapter<String>(this, R.layout.list_item_device);
+        final Context context = this;
+
+        mArrayAdapter = new ArrayAdapter<BluetoothDevice>(this, R.layout.list_item_device) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(context).inflate(R.layout.list_item_device, parent, false);
+                }
+
+                BluetoothDevice device = mArrayAdapter.getItem(position);
+
+                TextView text = (TextView) convertView.findViewById(R.id.device_name);
+                text.setText(device.getName());
+
+                TextView mac = (TextView) convertView.findViewById(R.id.device_mac);
+                mac.setText(device.getAddress());
+
+                return convertView;
+            }
+        };
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -43,7 +65,7 @@ public class BluetoothDevices extends Activity implements AdapterView.OnItemSele
                 // Loop through paired devices
                 for (BluetoothDevice device : pairedDevices) {
                     // Add the name and address to an array adapter to show in a ListView
-                    mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    mArrayAdapter.add(device);
                 }
             }
         }
@@ -77,16 +99,12 @@ public class BluetoothDevices extends Activity implements AdapterView.OnItemSele
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         Intent intent = new Intent();
-        intent.putExtra(AuthenticatorActivity.EXTRA_SELECTED, mArrayAdapter.getItem(position));
+        intent.putExtra(AuthenticatorActivity.EXTRA_SELECTED, mArrayAdapter.getItem(position).getAddress());
 
         setResult(Activity.RESULT_OK, intent);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
+        finish();
     }
 
     /**
@@ -94,9 +112,9 @@ public class BluetoothDevices extends Activity implements AdapterView.OnItemSele
      */
     public static class PlaceholderFragment extends Fragment {
 
-        private ArrayAdapter<String> list;
+        private ArrayAdapter<BluetoothDevice> list;
 
-        public PlaceholderFragment(ArrayAdapter<String> list) {
+        public PlaceholderFragment(ArrayAdapter<BluetoothDevice> list) {
             this.list = list;
         }
 
@@ -107,7 +125,7 @@ public class BluetoothDevices extends Activity implements AdapterView.OnItemSele
 
             ListView devices = (ListView) rootView.findViewById(R.id.devices);
             devices.setAdapter(list);
-            devices.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) getActivity());
+            devices.setOnItemClickListener((AdapterView.OnItemClickListener) getActivity());
 
             return rootView;
         }
