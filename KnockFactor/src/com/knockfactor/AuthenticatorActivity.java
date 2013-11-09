@@ -19,6 +19,9 @@ package com.knockfactor;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,6 +32,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.text.ClipboardManager;
 import android.text.Html;
@@ -60,8 +64,12 @@ import com.knockfactor.testability.DependencyInjector;
 import com.knockfactor.testability.TestableActivity;
 import com.knockfactor2.R;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * The main activity that displays usernames and codes
@@ -202,6 +210,16 @@ public class AuthenticatorActivity extends TestableActivity {
     // @VisibleForTesting
     static final int SCAN_REQUEST = 31337;
 
+    private static final int MESSAGE_READ = 1;
+
+    private BluetoothAdapter mBluetoothAdapter;
+    private Handler mHandler;
+
+    private final static int REQUEST_ENABLE_BT = 1;
+    private static final int SELECTED_PAIR = 2;
+
+    public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
+
     /**
      * Called when the activity is first created.
      */
@@ -285,6 +303,20 @@ public class AuthenticatorActivity extends TestableActivity {
             DependencyInjector.getOptionalFeatures().onAuthenticatorActivityCreated(this);
             importDataFromOldAppIfNecessary();
             handleIntent(getIntent());
+        }
+
+        mHandler = new Handler(Looper.getMainLooper()) {
+
+        };
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+            Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG);
+        } else {
+            Intent discoverableIntent = new
+                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivity(discoverableIntent);
         }
     }
 
@@ -785,8 +817,8 @@ public class AuthenticatorActivity extends TestableActivity {
             case R.id.add_account:
                 addAccount();
                 return true;
-            case R.id.how_it_works:
-                displayHowItWorksInstructions();
+            case R.id.paired_devices:
+                showPairedDevices();
                 return true;
             case R.id.settings:
                 showSettings();
@@ -804,7 +836,14 @@ public class AuthenticatorActivity extends TestableActivity {
             String scanResult = (intent != null) ? intent.getStringExtra("SCAN_RESULT") : null;
             Uri uri = (scanResult != null) ? Uri.parse(scanResult) : null;
             interpretScanResult(uri, false);
+        } else if (requestCode == SELECTED_PAIR && resultCode == Activity.RESULT_OK) {
+            String selected = (intent != null) ? intent.getStringExtra(EXTRA_SELECTED) : null;
+            Toast.makeText(this, selected, Toast.LENGTH_SHORT);
         }
+    }
+
+    private void showPairedDevices() {
+        startActivityForResult(new Intent(this, BluetoothDevices.class), SELECTED_PAIR);
     }
 
     private void displayHowItWorksInstructions() {
@@ -1244,6 +1283,110 @@ public class AuthenticatorActivity extends TestableActivity {
             this.secret = secret;
             this.type = type;
             this.counter = counter;
+        }
+    }
+
+    private class ConnectThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final BluetoothDevice mmDevice;
+
+        public ConnectThread(BluetoothDevice device) {
+            // Use a temporary object that is later assigned to mmSocket,
+            // because mmSocket is final
+            BluetoothSocket tmp = null;
+            mmDevice = device;
+
+            // Get a BluetoothSocket to connect with the given BluetoothDevice
+            try {
+                // MY_UUID is the app's UUID string, also used by the server code
+                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(getResources().getString(R.string.app_name)));
+            } catch (IOException e) { }
+            mmSocket = tmp;
+        }
+
+        public void run() {
+            // Cancel discovery because it will slow down the connection
+            mBluetoothAdapter.cancelDiscovery();
+
+            try {
+                // Connect the device through the socket. This will block
+                // until it succeeds or throws an exception
+                mmSocket.connect();
+            } catch (IOException connectException) {
+                // Unable to connect; close the socket and get out
+                try {
+                    mmSocket.close();
+                } catch (IOException closeException) { }
+                return;
+            }
+
+            // Do work to manage the connection (in a separate thread)
+            manageConnectedSocket(mmSocket);
+        }
+
+        /** Will cancel an in-progress connection, and close the socket */
+        public void cancel() {
+            try {
+                mmSocket.close();
+            } catch (IOException e) { }
+        }
+    }
+
+    private void manageConnectedSocket(BluetoothSocket socket) {
+        new ConnectedThread(socket).start();
+    }
+
+    private class ConnectedThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        public ConnectedThread(BluetoothSocket socket) {
+            mmSocket = socket;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            // Get the input and output streams, using temp objects because
+            // member streams are final
+            try {
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) { }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            byte[] buffer = new byte[1024];  // buffer store for the stream
+            int bytes; // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs
+            while (true) {
+                try {
+                    // Read from the InputStream
+                    bytes = mmInStream.read(buffer);
+                    // Send the obtained bytes to the UI activity
+                    mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
+                            .sendToTarget();
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+
+        /* Call this from the main activity to send data to the remote device */
+        public void write(byte[] bytes) {
+            try {
+                mmOutStream.write(bytes);
+            } catch (IOException e) { }
+        }
+
+        /* Call this from the main activity to shutdown the connection */
+        public void cancel() {
+            try {
+                mmSocket.close();
+            } catch (IOException e) { }
         }
     }
 }

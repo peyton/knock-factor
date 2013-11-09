@@ -323,4 +323,7 @@
     2-step verification protects your Google account even if your password is stolen.
   </string>
 
+    <string name="bluetooth_menu_item">Paired Devices</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

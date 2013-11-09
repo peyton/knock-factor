@@ -21,9 +21,9 @@
             android:icon="@android:drawable/ic_menu_add"
             android:title="@string/add_account_menu_item" />
         <item
-            android:id="@+id/how_it_works"
-            android:icon="@android:drawable/ic_menu_help"
-            android:title="@string/how_it_works_menu_item" />
+            android:id="@+id/paired_devices"
+            android:icon="@android:drawable/ic_menu_search"
+            android:title="@string/bluetooth_menu_item" />
         <item
             android:id="@+id/settings"
             android:icon="@android:drawable/ic_menu_preferences"
