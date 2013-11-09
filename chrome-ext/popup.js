@@ -12,9 +12,9 @@ var twoFactor = {
    * @type {string}
    * @private
    */
-  polling_: 'http://localhost:3000/knocked',
-  send_headers_: 'http://localhost:3000/request?hostname=',
-  pass_string_: 'http://localhost:3000/passstring',
+  polling_: 'http://localhost:12345/knocked',
+  send_headers_: 'http://localhost:12345/request?hostname=',
+  pass_string_: 'http://localhost:12345/passstring',
    
   /**
    * Checks to see if the current website is one with two factor-auth
@@ -27,7 +27,11 @@ var twoFactor = {
       var link = document.createElement('a');
       var url_full = tab.url;
       link.href = tab.url;
-      that.pollKnocked(link.hostname);
+      var hostname = link.hostname;
+      var first = hostname.indexOf(".");
+      var last = hostname.lastIndexOf(".");
+      var host_f = hostname.substring(first + 1, last);
+      that.pollKnocked(host_f);
     });
   },
  
@@ -43,6 +47,7 @@ var twoFactor = {
     var that = this;
     $.get( this.send_headers_, {request: hostname} )
       .done(function( ) {
+        console.log(hostname);
         that.getResponseCode();
     });
     
@@ -57,17 +62,20 @@ var twoFactor = {
    */
 
   getResponseCode: function() {
+    var that = this;
     $.ajax({ 
       url: this.pass_string_, 
       success: function(data) {
-        if (data!=="nothing yet") {
+        console.log("data" + data);
+        if (data==="nothing yet") {
+          setTimeout(function() {
+          that.getResponseCode();
+        }, 1000);
+        } else {
           console.log(data);
-          return false;
         }
       }, 
-      dataType: "text", 
-      complete: this.getResponseCode, 
-      timeout: 30000 
+      dataType: "text"
     });
   },
 
@@ -81,10 +89,14 @@ var twoFactor = {
     var link = hostname;
     var that = this;
     $.ajax({ url: this.polling_, success: function(data){
-      if (data==="yes") {
+      if (data==="yes") { 
         that.sendHostname(hostname);
-      } 
-    }, dataType: "text", complete: this.pollKnocked, timeout: 30000 });
+      } else {
+        setTimeout(function() {
+          that.pollKnocked(hostname);
+        }, 1000);
+      }
+    }, dataType: "text" });
   },
 }
   
