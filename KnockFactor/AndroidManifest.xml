@@ -86,11 +86,10 @@
               android:theme="@android:style/Theme.Translucent.NoTitleBar"
               android:label="@string/timesync_sync_now_screen_title" />
 
-      <activity android:name="com.knockfactor.BluetoothDevices" />
+    <activity android:name="com.knockfactor.BluetoothDevices" />
 
-      <service android:name="KnockFactorService" />
-      <receiver android:name="ResponseReceiver" />
-      <receiver android:name="com.knockfactor.wizard.KnockFactorReceiver" />
+    <service android:name="com.knockfactor.KnockFactorService" />
+    <receiver android:name="com.knockfactor.KnockFactorReceiver" />
   </application>
 
 </manifest>

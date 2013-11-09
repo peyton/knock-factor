@@ -36,7 +36,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.ClipboardManager;
 import android.text.Html;
 import android.util.Log;
@@ -339,7 +338,8 @@ public class AuthenticatorActivity extends TestableActivity {
         mServiceIntent = new Intent(this, KnockFactorService.class);
         startService(mServiceIntent);
         IntentFilter defaultIntentFilter = new IntentFilter("DEFAULT");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mKnockFactorReceiver, defaultIntentFilter);
+        // LocalBroadcastManager.getInstance(this).registerReceiver(mKnockFactorReceiver, defaultIntentFilter);
+        registerReceiver(mKnockFactorReceiver, defaultIntentFilter);
     }
 
     /**
