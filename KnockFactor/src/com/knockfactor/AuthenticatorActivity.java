@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
@@ -327,16 +328,28 @@ public class AuthenticatorActivity extends TestableActivity {
                 switch (msg.what) {
                     case MESSAGE_READ:
                         int bytes = msg.arg1;
-                        int[] buffer = (int[]) msg.obj;
+                        byte[] buffer = (byte[]) msg.obj;
+                        byte[] message = Arrays.copyOf(buffer, bytes);
 
-//                        Toast.makeText(getApplicationContext(), Arrays.toString(buffer)).;
+                        try {
+                            String contents = new String(message, "UTF-8");
+
+                            Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_SHORT).show();
+
+                            for (PinInfo info : mUsers) {
+                                if (info.user.toLowerCase().contains(contents)) {
+                                    mConnected.write(info.pin.getBytes());
+
+                                    Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
+                                }
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            Log.w("Knock Factor", "Bad encoding!");
+                        }
 
                         break;
                     case MESSAGE_CONNECT:
-
-                        if (mConnected != null) {
-                            mConnected.write("knocked".getBytes());
-                        }
+                        Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
 
                         break;
                 }
@@ -350,7 +363,7 @@ public class AuthenticatorActivity extends TestableActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
-            Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG);
+            Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG).show();
         } else {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -1445,7 +1458,7 @@ public class AuthenticatorActivity extends TestableActivity {
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
-                        Toast.makeText(getApplicationContext(), "Could not close socket!", Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), "Could not close socket!", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 }
