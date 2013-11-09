@@ -2,9 +2,7 @@ package com.knockfactor;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.hardware.SensorManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class KnockFactorService extends IntentService {
 

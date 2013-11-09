@@ -17,6 +17,9 @@ public class KnockEventListener implements SensorEventListener {
     float currZ;
     float diffZ;
 
+    final int timeframe = 1000; // milliseconds
+    private int numKnocks = 0;
+
     KnockEventListener(SensorManager sm) {
         mSensorManager = sm;
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
@@ -42,11 +45,16 @@ public class KnockEventListener implements SensorEventListener {
         currZ = z;
         diffZ = Math.abs(currZ - prevZ);
 
-        if (diffZ > 2) {
+        if (numKnocks == 1 && diffZ > 2) {
             knockDetected = true;
+            numKnocks = 0;
+        } else if (diffZ > 2) {
+            numKnocks++;
             // Log.v("knockListener", "prevZ " + prevZ);
             // Log.v("knockListener", "currZ " + currZ);
             Log.v("knockListener", "diffZ" + diffZ);
+        } else {
+            numKnocks = 0;
         }
     }
 
