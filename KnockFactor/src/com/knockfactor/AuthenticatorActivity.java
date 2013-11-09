@@ -555,6 +555,32 @@ public class AuthenticatorActivity extends TestableActivity {
         }
     }
 
+    public static PinInfo[] getUsers(AccountDb accountDb, OtpSource mOtpProvider) {
+        ArrayList<String> usernames = new ArrayList<String>();
+        accountDb.getNames(usernames);
+
+        int userCount = usernames.size();
+
+        if (userCount > 0) {
+            PinInfo[] users = new PinInfo[userCount];
+
+            for (int i = 0; i < userCount; ++i) {
+                String user = usernames.get(i);
+
+                PinInfo currentPin = new PinInfo();
+                currentPin.pin = "_ _ _ _ _ _";
+                currentPin.hotpCodeGenerationAllowed = true;
+
+                try {
+                    users[i] = computePin(currentPin, accountDb, mOtpProvider, user, false);
+                } catch (OtpSourceException ignored) {
+                }
+            }
+        } else {
+            return new PinInfo[0]; // clear any existing user PIN state
+        }
+    }
+
     /**
      * Display list of user emails and updated pin codes.
      *
