@@ -4,10 +4,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 public class KnockEventListener implements SensorEventListener {
 
     private SensorManager mSensorManager;
+    private Sensor mAcceleromator;
     public boolean knockDetected = false;
     float prevZ;
     float currZ;
@@ -15,14 +17,13 @@ public class KnockEventListener implements SensorEventListener {
 
     KnockEventListener(SensorManager sm) {
         mSensorManager = sm;
-        /*
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAcceleromator = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAcceleromator, SensorManager.SENSOR_DELAY_NORMAL);
-        */
+
 
         // initialize values
         currZ = 0;
+        Log.v("knockListener", "initialized");
     }
 
 
@@ -38,6 +39,11 @@ public class KnockEventListener implements SensorEventListener {
 
         if (diffZ > 2) {
             knockDetected = true;
+            /*
+            Log.v("knockListener", "prevZ " + prevZ);
+            Log.v("knockListener", "currZ " + currZ);
+            Log.v("knockListener", "" + diffZ);
+            */
         }
     }
 

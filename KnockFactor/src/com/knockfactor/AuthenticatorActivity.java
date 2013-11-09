@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Color;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -220,12 +221,16 @@ public class AuthenticatorActivity extends TestableActivity {
 
     public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
 
+    private KnockEventListener knockListener;
+
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.v("knockListener", "authenticator");
 
         mAccountDb = DependencyInjector.getAccountDb();
         mOtpProvider = DependencyInjector.getOtpProvider();
@@ -318,6 +323,8 @@ public class AuthenticatorActivity extends TestableActivity {
             discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivity(discoverableIntent);
         }
+
+        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
     }
 
     /**
