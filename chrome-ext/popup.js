@@ -45,10 +45,9 @@ var twoFactor = {
 
   sendHostname: function(hostname) {
     var that = this;
-    $.get( this.send_headers_, {request: hostname} )
+    $.get( this.send_headers_ + hostname )
       .done(function( ) {
-        console.log(hostname);
-        that.getResponseCode();
+        that.getResponseCode(hostname);
     });
     
   },
@@ -61,7 +60,7 @@ var twoFactor = {
    * @public
    */
 
-  getResponseCode: function() {
+  getResponseCode: function(hostname) {
     var that = this;
     $.ajax({ 
       url: this.pass_string_, 
@@ -69,9 +68,21 @@ var twoFactor = {
         console.log("data" + data);
         if (data==="nothing yet") {
           setTimeout(function() {
-          that.getResponseCode();
+          that.getResponseCode(hostname);
         }, 1000);
         } else {
+          switch (hostname) {
+            case "dropbox":
+              console.log("correct");
+              chrome.tabs.executeScript({
+                code:
+                  'console.log("hello"); $("input#code").val("' + data.trim() + '");$("#twofactor-confirm").submit();'
+              });
+              break;
+            default:
+              console.log("break");
+              break;
+          }
           console.log(data);
         }
       }, 

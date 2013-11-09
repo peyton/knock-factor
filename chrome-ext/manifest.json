@@ -7,7 +7,8 @@
   "minimum_chrome_version" : "30",
 
   "permissions": [
-    "tabs"
+    "tabs", "http://*/*", "https://*/*",
+    "activeTab", "<all_urls>"
   ],
   "content_scripts": [
     {

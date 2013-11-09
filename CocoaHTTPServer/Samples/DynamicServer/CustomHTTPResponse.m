@@ -12,7 +12,7 @@
 
 - (NSDictionary *)httpHeaders;
 {
-    return @{"Access-Control-Allow-Origin" : "*"};
+    return @{@"Access-Control-Allow-Origin" : @"*"};
 }
 
 @end
