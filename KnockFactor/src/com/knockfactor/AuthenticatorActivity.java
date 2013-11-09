@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -31,11 +32,13 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.Vibrator;
 import android.text.ClipboardManager;
 import android.text.Html;
@@ -71,7 +74,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -214,10 +219,16 @@ public class AuthenticatorActivity extends TestableActivity {
     // @VisibleForTesting
     static final int SCAN_REQUEST = 31337;
 
-    private static final int MESSAGE_READ = 1;
+    private static final int MESSAGE_READ = 3;
+    private static final int MESSAGE_CONNECT = 1;
+    private static final int MESSAGE_DISCONNECT = 2;
+
+    private Menu mMenu;
 
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
+    private ConnectedThread mConnected;
+    private AcceptThread mAccept;
 
     private final static int REQUEST_ENABLE_BT = 1;
     private static final int SELECTED_PAIR = 2;
@@ -226,7 +237,7 @@ public class AuthenticatorActivity extends TestableActivity {
 
     private KnockEventListener knockListener;
     private Intent mServiceIntent;
-    KnockFactorReceiver mKnockFactorReceiver;
+    // KnockFactorReceiver mKnockFactorReceiver;
     private static final UUID OUR_UUID = UUID.fromString("d749856c-5143-48fe-8b86-35e4494bd073");
 
 
@@ -318,15 +329,69 @@ public class AuthenticatorActivity extends TestableActivity {
 
         mHandler = new Handler(Looper.getMainLooper()) {
 
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+
+                switch (msg.what) {
+                    case MESSAGE_READ:
+                        int bytes = msg.arg1;
+                        byte[] buffer = (byte[]) msg.obj;
+                        byte[] message = Arrays.copyOf(buffer, bytes);
+
+                        try {
+                            String contents = new String(message, "UTF-8");
+
+                            Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_SHORT).show();
+
+                            for (PinInfo info : mUsers) {
+                                if (info.user.toLowerCase().contains(contents.toLowerCase())) {
+                                    mConnected.write(info.pin.getBytes());
+
+                                    Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
+
+                                    return;
+                                }
+                            }
+
+                            Log.w("Knock Factor", "user not found: " + contents);
+                        } catch (UnsupportedEncodingException e) {
+                            Log.w("Knock Factor", "Bad encoding!");
+                        }
+
+                        break;
+                    case MESSAGE_CONNECT:
+                        Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_SHORT).show();
+                        MenuItem menuItem = mMenu.findItem(R.id.connect);
+                        menuItem.setTitle(getResources().getString(R.string.disconnect));
+
+                        break;
+
+                    case MESSAGE_DISCONNECT:
+                        Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_SHORT).show();
+                        MenuItem item = mMenu.findItem(R.id.connect);
+                        item.setTitle(getResources().getString(R.string.connect_menu_item));
+
+                        break;
+                }
+            }
+
+            @Override
+            public void dispatchMessage(Message msg) {
+                super.dispatchMessage(msg);
+            }
         };
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
-            Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG);
+            Toast.makeText(this, "Device does not support bluetooth", Toast.LENGTH_LONG).show();
         } else {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            } else {
+                mAccept = new AcceptThread();
+                mAccept.start();
             }
 //            Intent discoverableIntent = new
 //                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -334,14 +399,33 @@ public class AuthenticatorActivity extends TestableActivity {
 //            startActivity(discoverableIntent);
         }
 
-        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
         /*
+        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
         mServiceIntent = new Intent(this, KnockFactorService.class);
         startService(mServiceIntent);
         */
-        mKnockFactorReceiver = new KnockFactorReceiver();
-        IntentFilter defaultIntentFilter = new IntentFilter("DEFAULT");
-        registerReceiver(mKnockFactorReceiver, defaultIntentFilter);
+
+        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE)) {
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                super.onSensorChanged(event);
+
+                if (this.knockDetected) {
+                    Log.w("Knock Factor", "knock? " + this.knockDetected);
+
+                    mServiceIntent = new Intent(AuthenticatorActivity.this, KnockFactorService.class);
+                    mServiceIntent.putExtra("STATUS", this.knockDetected);
+                    startService(mServiceIntent);
+
+                    if (mConnected != null) {
+                        mConnected.write("knocked".getBytes());
+                    }
+                }
+
+                this.knockDetected = false;
+            }
+        };
     }
 
     /**
@@ -409,7 +493,7 @@ public class AuthenticatorActivity extends TestableActivity {
         stopTotpCountdownTask();
 
         super.onStop();
-        unregisterReceiver(mKnockFactorReceiver);
+        // unregisterReceiver(mKnockFactorReceiver);
         // knockListener.pauseListener();
     }
 
@@ -835,6 +919,9 @@ public class AuthenticatorActivity extends TestableActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        mMenu = menu;
+
         return true;
     }
 
@@ -846,6 +933,26 @@ public class AuthenticatorActivity extends TestableActivity {
                 return true;
             case R.id.paired_devices:
                 showPairedDevices();
+                return true;
+            case R.id.connect:
+                if (item.getTitle().equals(getResources().getString(R.string.connect_menu_item))) {
+                    if (mConnected != null) {
+                        mConnected.cancel();
+                    }
+
+                    if (mAccept != null) {
+                        mAccept.cancel();
+                        mAccept = null;
+                    }
+
+                    mAccept = new AcceptThread();
+                    mAccept.start();
+                } else {
+                    if (mConnected != null) {
+                        mConnected.cancel();
+                    }
+                }
+
                 return true;
             case R.id.settings:
                 showSettings();
@@ -875,7 +982,7 @@ public class AuthenticatorActivity extends TestableActivity {
                     if (device.getAddress().equals(selected)) {
                         new ConnectThread(device).start();
 
-                        Toast.makeText(this, "connecting to " + selected, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
 
                         break;
                     }
@@ -1375,7 +1482,53 @@ public class AuthenticatorActivity extends TestableActivity {
     }
 
     private void manageConnectedSocket(BluetoothSocket socket) {
-        new ConnectedThread(socket).start();
+        mConnected = new ConnectedThread(socket);
+        mConnected.start();
+    }
+
+    private class AcceptThread extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+
+        public AcceptThread() {
+            // Use a temporary object that is later assigned to mmServerSocket,
+            // because mmServerSocket is final
+            BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code
+                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(getResources().getString(R.string.app_name), OUR_UUID);
+            } catch (IOException e) { }
+            mmServerSocket = tmp;
+        }
+
+        public void run() {
+            BluetoothSocket socket = null;
+            // Keep listening until exception occurs or a socket is returned
+            while (true) {
+                try {
+                    socket = mmServerSocket.accept();
+                } catch (IOException e) {
+                    break;
+                }
+                // If a connection was accepted
+                if (socket != null) {
+                    // Do work to manage the connection (in a separate thread)
+                    manageConnectedSocket(socket);
+                    try {
+                        mmServerSocket.close();
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Could not close socket!", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+            }
+        }
+
+        /** Will cancel the listening socket, and cause the thread to finish */
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) { }
+        }
     }
 
     private class ConnectedThread extends Thread {
@@ -1393,7 +1546,11 @@ public class AuthenticatorActivity extends TestableActivity {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                Log.w("Knock Factor", "Could not create streams.");
+            }
+
+            mHandler.obtainMessage(MESSAGE_CONNECT).sendToTarget();
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
@@ -1428,24 +1585,11 @@ public class AuthenticatorActivity extends TestableActivity {
         public void cancel() {
             try {
                 mmSocket.close();
+
+                // Send the obtained bytes to the UI activity
+                mHandler.obtainMessage(MESSAGE_DISCONNECT)
+                        .sendToTarget();
             } catch (IOException e) { }
         }
     }
-
-    private class KnockFactorReceiver extends BroadcastReceiver {
-
-        private KnockFactorReceiver() {
-            // prevents instantiation by other packages
-            Log.v("knockListener", "start receiver");
-        }
-
-        public void onReceive(Context context, Intent intent) {
-            Log.v("knockListener", "receiving");
-            if (intent.getBooleanExtra(KnockFactorService.STATUS, false)) {
-                Log.v("knockListener", "onReceive, knock detected");
-                Toast.makeText(context, "knock detected", Toast.LENGTH_LONG);
-            }
-        }
-    }
-
 }

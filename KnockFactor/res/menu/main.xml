@@ -25,6 +25,10 @@
             android:icon="@android:drawable/ic_menu_search"
             android:title="@string/bluetooth_menu_item" />
         <item
+            android:id="@+id/connect"
+            android:icon="@android:drawable/ic_menu_upload"
+            android:title="@string/connect_menu_item" />
+        <item
             android:id="@+id/settings"
             android:icon="@android:drawable/ic_menu_preferences"
             android:title="@string/settings_menu_item" />
