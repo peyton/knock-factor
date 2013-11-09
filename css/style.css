@@ -1,0 +1,40 @@
+body {
+  margin-left: 60px;
+}
+#description img {
+  height: 300px;
+}
+
+p, li {
+  font-family: 'Nunito', sans-serif;
+}
+
+a {
+  color: #6d6d6d;
+  text-decoration: none;
+}
+
+#gistbody {
+  display: inline-block;
+  float: left;
+}
+#button {
+  display: inline-block;
+  float: right;
+  background-color:  #6d6d6d;
+  width: 150px;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 50px;
+  margin-right: 100px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#button a {
+  color: white;
+}
+footer {
+  clear: both;
+}

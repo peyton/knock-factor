@@ -24,13 +24,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -234,6 +233,8 @@ public class AuthenticatorActivity extends TestableActivity {
     private static final int SELECTED_PAIR = 2;
 
     public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
+    public static final String PREFS_NAME = "com.knockfactor.prefs";
+    public static final String PREF_MAC = "com.knockfactor.prefs.mac";
 
     private KnockEventListener knockListener;
     private Intent mServiceIntent;
@@ -343,18 +344,6 @@ public class AuthenticatorActivity extends TestableActivity {
                             String contents = new String(message, "UTF-8");
 
                             Toast.makeText(getApplicationContext(), contents, Toast.LENGTH_SHORT).show();
-
-                            for (PinInfo info : mUsers) {
-                                if (info.user.toLowerCase().contains(contents.toLowerCase())) {
-                                    mConnected.write(info.pin.getBytes());
-
-                                    Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
-
-                                    return;
-                                }
-                            }
-
-                            Log.w("Knock Factor", "user not found: " + contents);
                         } catch (UnsupportedEncodingException e) {
                             Log.w("Knock Factor", "Bad encoding!");
                         }
@@ -381,6 +370,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 super.dispatchMessage(msg);
             }
         };
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
@@ -390,7 +380,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
-                mAccept = new AcceptThread();
+                mAccept = new AcceptThread(this, mHandler, mBluetoothAdapter, mUsers);
                 mAccept.start();
             }
 //            Intent discoverableIntent = new
@@ -616,28 +606,32 @@ public class AuthenticatorActivity extends TestableActivity {
         mContentAccountsPresent.setVisibility((mUsers.length > 0) ? View.VISIBLE : View.GONE);
     }
 
+    public void computeAndDisplayPin(String user, int position,
+                                     boolean computeHotp) throws OtpSourceException {
+        if (mUsers[position] != null) {
+            mUsers[position] = computePin(mUsers[position], mAccountDb, mOtpProvider, user, computeHotp);
+        } else {
+            PinInfo currentPin = new PinInfo();
+            currentPin.pin = getString(R.string.empty_pin);
+            currentPin.hotpCodeGenerationAllowed = true;
+
+            mUsers[position]= computePin(currentPin, mAccountDb, mOtpProvider, user, computeHotp);
+        }
+
+    }
+
     /**
      * Computes the PIN and saves it in mUsers. This currently runs in the UI
      * thread so it should not take more than a second or so. If necessary, we can
      * move the computation to a background thread.
      *
      * @param user        the user email to display with the PIN
-     * @param position    the index for the screen of this user and PIN
      * @param computeHotp true if we should increment counter and display new hotp
      */
-    public void computeAndDisplayPin(String user, int position,
+    public static PinInfo computePin(PinInfo currentPin, AccountDb accountdb, OtpSource otpProvider, String user,
                                      boolean computeHotp) throws OtpSourceException {
 
-        PinInfo currentPin;
-        if (mUsers[position] != null) {
-            currentPin = mUsers[position]; // existing PinInfo, so we'll update it
-        } else {
-            currentPin = new PinInfo();
-            currentPin.pin = getString(R.string.empty_pin);
-            currentPin.hotpCodeGenerationAllowed = true;
-        }
-
-        OtpType type = mAccountDb.getType(user);
+        OtpType type = accountdb.getType(user);
         currentPin.isHotp = (type == OtpType.HOTP);
 
         currentPin.user = user;
@@ -647,11 +641,11 @@ public class AuthenticatorActivity extends TestableActivity {
             // reached if the account is:
             // - Time-based, in which case getNextCode() does not change state.
             // - Counter-based (HOTP) and computeHotp is true.
-            currentPin.pin = mOtpProvider.getNextCode(user);
+            currentPin.pin = otpProvider.getNextCode(user);
             currentPin.hotpCodeGenerationAllowed = true;
         }
 
-        mUsers[position] = currentPin;
+        return currentPin;
     }
 
     /**
@@ -945,7 +939,7 @@ public class AuthenticatorActivity extends TestableActivity {
                         mAccept = null;
                     }
 
-                    mAccept = new AcceptThread();
+                    mAccept = new AcceptThread(getApplicationContext(), mHandler, mBluetoothAdapter, mUsers);
                     mAccept.start();
                 } else {
                     if (mConnected != null) {
@@ -980,7 +974,7 @@ public class AuthenticatorActivity extends TestableActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     // Add the name and address to an array adapter to show in a ListView
                     if (device.getAddress().equals(selected)) {
-                        new ConnectThread(device).start();
+                        new ConnectThread(this, mBluetoothAdapter, device, mHandler, mUsers).start();
 
                         Toast.makeText(this, "connecting to " + device.getName(), Toast.LENGTH_SHORT).show();
 
@@ -1435,15 +1429,23 @@ public class AuthenticatorActivity extends TestableActivity {
         }
     }
 
-    private class ConnectThread extends Thread {
+    private static class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
+        private final BluetoothAdapter mBluetoothAdapter;
+        private final Handler mHandler;
+        private final PinInfo[] mUsers;
+        private final Context mContext;
 
-        public ConnectThread(BluetoothDevice device) {
+        public ConnectThread(Context context, BluetoothAdapter bluetoothAdapter, BluetoothDevice device, Handler handler, PinInfo[] users) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
             BluetoothSocket tmp = null;
             mmDevice = device;
+            mHandler = handler;
+            mUsers = users;
+            mContext = context;
+            mBluetoothAdapter = bluetoothAdapter;
 
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
@@ -1470,7 +1472,7 @@ public class AuthenticatorActivity extends TestableActivity {
             }
 
             // Do work to manage the connection (in a separate thread)
-            manageConnectedSocket(mmSocket);
+            manageConnectedSocket(mContext, mHandler, mmSocket, mUsers);
         }
 
         /** Will cancel an in-progress connection, and close the socket */
@@ -1481,21 +1483,33 @@ public class AuthenticatorActivity extends TestableActivity {
         }
     }
 
+    private static void manageConnectedSocket(Context context, Handler handler, BluetoothSocket socket, PinInfo[] users) {
+        new ConnectedThread(context, handler, socket, users).start();
+    }
+
     private void manageConnectedSocket(BluetoothSocket socket) {
-        mConnected = new ConnectedThread(socket);
+        mConnected = new ConnectedThread(this, mHandler, socket, mUsers);
         mConnected.start();
     }
 
-    private class AcceptThread extends Thread {
+    public static class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;
+        private BluetoothAdapter mBluetoothAdapter;
+        private Handler mHandler;
+        private Context mContext;
+        private PinInfo[] mUsers;
 
-        public AcceptThread() {
+        public AcceptThread(Context context, Handler handler, BluetoothAdapter adapter, PinInfo[] mUsers) {
+            mContext = context;
+            mHandler = handler;
+            mBluetoothAdapter = adapter;
+
             // Use a temporary object that is later assigned to mmServerSocket,
             // because mmServerSocket is final
             BluetoothServerSocket tmp = null;
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
-                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(getResources().getString(R.string.app_name), OUR_UUID);
+                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Knock Factor", OUR_UUID);
             } catch (IOException e) { }
             mmServerSocket = tmp;
         }
@@ -1512,11 +1526,11 @@ public class AuthenticatorActivity extends TestableActivity {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    manageConnectedSocket(socket);
+                    manageConnectedSocket(mContext, mHandler, socket, mUsers);
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
-                        Toast.makeText(getApplicationContext(), "Could not close socket!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Could not close socket!", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 }
@@ -1531,12 +1545,17 @@ public class AuthenticatorActivity extends TestableActivity {
         }
     }
 
-    private class ConnectedThread extends Thread {
+    private static class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
+        private final Handler mHandler;
+        private final PinInfo[] mUsers;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        public ConnectedThread(Context context, Handler handler, BluetoothSocket socket, PinInfo[] users) {
+            mHandler = handler;
+            mUsers = users;
+
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -1549,6 +1568,8 @@ public class AuthenticatorActivity extends TestableActivity {
             } catch (IOException e) {
                 Log.w("Knock Factor", "Could not create streams.");
             }
+
+            saveMAC(context, socket.getRemoteDevice().getAddress());
 
             mHandler.obtainMessage(MESSAGE_CONNECT).sendToTarget();
 
@@ -1565,9 +1586,25 @@ public class AuthenticatorActivity extends TestableActivity {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
+
+                    byte[] message = Arrays.copyOf(buffer, bytes);
+                    String contents = new String(message, "UTF-8");
+
                     // Send the obtained bytes to the UI activity
                     mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
+
+                    for (PinInfo info : mUsers) {
+                        if (info.user.toLowerCase().contains(contents.toLowerCase())) {
+                            write(info.pin.getBytes());
+
+                            Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
+
+                            return;
+                        }
+                    }
+
+                    Log.w("Knock Factor", "user not found: " + contents);
                 } catch (IOException e) {
                     break;
                 }
@@ -1590,6 +1627,36 @@ public class AuthenticatorActivity extends TestableActivity {
                 mHandler.obtainMessage(MESSAGE_DISCONNECT)
                         .sendToTarget();
             } catch (IOException e) { }
+        }
+    }
+
+    private static void saveMAC(Context context, String mac) {
+        // We need an Editor object to make preference changes.
+        // All objects are from android.context.Context
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(PREF_MAC, mac);
+
+        // Commit the edits!
+        editor.commit();
+    }
+
+    private static String getMAC(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+        return settings.getString(PREF_MAC, "");
+    }
+
+    private static BluetoothDevice getPairedDevice(BluetoothAdapter bluetoothAdapter, String mac) {
+        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                if (device.getAddress().equals(mac)) {
+                    return device;
+                }
+            }
         }
     }
 }
