@@ -1,15 +1,19 @@
 {
+  "name": "Heart Rate Monitor Integration Sample",
+  "description": "Demo of Zephyr HXM Heart Rate Monitor interaction",
+  "version": "1.2",
   "manifest_version": 2,
-
-  "name": "One-click Kittens",
-  "description": "This extension demonstrates a browser action with kittens.",
-  "version": "1.0",
-
+  "minimum_chrome_version": "30",
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
   "permissions": [
-    "bluetooth"
+    {"bluetooth":[{"uuid": "00001101-0000-1000-8000-00805f9b34fb"}]}
   ],
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html"
-  }
+  "sandbox": {
+    "pages": ["graph.html"]
+  },
+  "offline_enabled": true
 }
