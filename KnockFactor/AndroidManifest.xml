@@ -87,6 +87,9 @@
 
       <activity android:name="com.knockfactor.BluetoothDevices" />
 
+      <service android:name="KnockFactorService" />
+      <receiver android:name="ResponseReceiver" />
+      <receiver android:name="com.knockfactor.wizard.KnockFactorReceiver" />
   </application>
 
 </manifest>

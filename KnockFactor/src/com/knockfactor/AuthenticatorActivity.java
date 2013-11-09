@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.ClipboardManager;
 import android.text.Html;
 import android.util.Log;
@@ -221,7 +223,9 @@ public class AuthenticatorActivity extends TestableActivity {
 
     public static final String EXTRA_SELECTED = "com.knockfactor.extras.selected";
 
-    private KnockEventListener knockListener;
+    // private KnockEventListener knockListener;
+    private Intent mServiceIntent;
+    KnockFactorReceiver mKnockFactorReceiver;
 
     /**
      * Called when the activity is first created.
@@ -324,7 +328,11 @@ public class AuthenticatorActivity extends TestableActivity {
             startActivity(discoverableIntent);
         }
 
-        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
+        // knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
+        mServiceIntent = new Intent(this, KnockFactorService.class);
+        startService(mServiceIntent);
+        IntentFilter defaultIntentFilter = new IntentFilter("DEFAULT");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mKnockFactorReceiver, defaultIntentFilter);
     }
 
     /**
