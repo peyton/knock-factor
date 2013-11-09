@@ -37,6 +37,37 @@ NSObject<HTTPResponse> *stringResponse(NSString *string);
 	
 	NSString *relativePath = [filePath substringFromIndex:[documentRoot length]];
 	
+    if ([relativePath isEqualToString:@"/canknock"])
+    {
+        HTTPLogVerbose(@"Requesting can knock");
+        
+        if (![method isEqualToString:@"GET"])
+            return stringResponse(@"error: only GET is supported");
+        
+        NSDictionary *params = [self parseGetParams];
+        
+        if (![params objectForKey:@"hostname"])
+            return stringResponse(@"error: missing hostname parameter");
+        
+        NSString *hostname = [params objectForKey:@"hostname"];
+        
+        __block NSString *reply = nil;
+        __block BOOL replied = NO;
+        [(DynamicServerAppDelegate *)[NSApp delegate] sendMessage:hostname callback:^(NSString *replyString) {
+            reply = replyString;
+            replied = YES;
+        }];
+        
+        int numSleeps = 0;
+        while (!replied) {
+            usleep(1000 * 10);
+            numSleeps++;
+            if (numSleeps > 10) break;
+        }
+        
+        return stringResponse(reply);
+    }
+    
     if ([relativePath isEqualToString:@"/knocked"])
     {
         if ([(DynamicServerAppDelegate *)[NSApp delegate] knocked])
