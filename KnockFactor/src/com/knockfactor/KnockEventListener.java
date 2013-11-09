@@ -17,10 +17,13 @@ public class KnockEventListener implements SensorEventListener {
     float prevZ;
     float currZ;
     float diffZ;
+    float minZ;
+    float maxZ;
 
-    final int timeframe = 1000; // milliseconds
+    final int millisInFuture = 2000; // milliseconds
+    final long countDownInterval = 1000;
     private int numKnocks = 0;
-    private CountDownTimer mCountDownTimer;
+    private MyCountDownTimer mCountDownTimer;
 
     KnockEventListener(SensorManager sm) {
         mSensorManager = sm;
@@ -30,10 +33,9 @@ public class KnockEventListener implements SensorEventListener {
 
         }
         mSensorManager.registerListener(this, mAcceleromator, SensorManager.SENSOR_DELAY_NORMAL);
-
-        // initialize values
         currZ = 0;
-        Log.v("knockListener", "initialized");
+        minZ = 2;
+        maxZ = 7;
     }
 
 
@@ -47,19 +49,15 @@ public class KnockEventListener implements SensorEventListener {
         currZ = z;
         diffZ = Math.abs(currZ - prevZ);
 
-        if (numKnocks == 1 && diffZ > 2) {
-            // second knock
-            knockDetected = true;
-            numKnocks = 0;
-        } else if (diffZ > 2) {
-            // first knock
-            numKnocks++;
-
-            // Log.v("knockListener", "prevZ " + prevZ);
-            // Log.v("knockListener", "currZ " + currZ);
-            Log.v("knockListener", "diffZ" + diffZ);
-        } else {
-            numKnocks = 0;
+        if (diffZ > minZ && diffZ < maxZ) {
+            if (numKnocks == 1 && !mCountDownTimer.finished) {
+                knockDetected = true;
+                numKnocks = 0;
+            } else if (numKnocks == 0) {
+                mCountDownTimer = new MyCountDownTimer(millisInFuture, countDownInterval);
+                mCountDownTimer.start();
+                numKnocks++;
+            }
         }
     }
 
@@ -74,5 +72,25 @@ public class KnockEventListener implements SensorEventListener {
 
     public void resumeListener() {
         mSensorManager.registerListener(this, mAcceleromator, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    private class MyCountDownTimer extends CountDownTimer {
+
+        boolean finished;
+
+        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+            finished = false;
+        }
+
+        @Override
+        public void onTick(long l) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            finished = true;
+        }
     }
 }
