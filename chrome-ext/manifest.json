@@ -6,7 +6,7 @@
   "version": "1.0",
 
   "permissions": [
-    "bluetooth"
+    {"bluetooth": [{"uuid": "be4152a0-4920-11e3-8f96-0800200c9a66"}]}
   ],
   "browser_action": {
     "default_icon": "icon.png",
