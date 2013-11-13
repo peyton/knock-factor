@@ -10,6 +10,8 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.hostname && request.data) {
+      console.log(request);
+
       switch (request.hostname) {
         case "dropbox":
           chrome.tabs.executeScript({
@@ -20,8 +22,9 @@ chrome.runtime.onMessage.addListener(
         case "github":
           chrome.tabs.executeScript({
             code:
-              '$("input[name="otp"]).val("' + request.data + '");$("button[type="submit"]").submit();'
+              '$(\'input[name="otp"]\').val("' + request.data + '");$(\'button[type="submit"]\').submit();'
           });
+          break;
         default:
           console.log("break");
           break;

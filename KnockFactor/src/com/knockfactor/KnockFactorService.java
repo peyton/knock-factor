@@ -2,8 +2,10 @@ package com.knockfactor;
 
 import android.app.IntentService;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 
 import com.knockfactor.testability.DependencyInjector;
 
@@ -32,12 +34,34 @@ public class KnockFactorService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        boolean knockDetected = intent.getBooleanExtra("STATUS", false);
+        boolean knockDetected = intent.getBooleanExtra(STATUS, false);
+
         if (knockDetected) {
-            mConnectThread = new AuthenticatorActivity.ConnectThread(getApplicationContext(), mBTAdapter,
-                    AuthenticatorActivity.getPairedDevice(mBTAdapter, AuthenticatorActivity.getMAC(this)),
-                    new Handler(), mUsers);
-            mConnectThread.start();
+            if (AuthenticatorActivity.mConnected == null) {
+                Log.w("Knock Factor", "connecting");
+
+                String mac = AuthenticatorActivity.getMAC(this);
+
+                if (mac != null && mac.length() > 0) {
+
+                    BluetoothDevice device = AuthenticatorActivity.getPairedDevice(mBTAdapter, mac);
+
+                    if (device != null) {
+                        if (mConnectThread != null) {
+                            mConnectThread.cancel();
+                        }
+
+                        mConnectThread = new AuthenticatorActivity.ConnectThread(getApplicationContext(), mBTAdapter,
+                                device,
+                                new Handler(), mUsers);
+                        mConnectThread.start();
+                    }
+                }
+            } else {
+                Log.w("Knock Factor", "writing");
+
+                AuthenticatorActivity.mConnected.write("knocked".getBytes());
+            }
         }
     }
 }

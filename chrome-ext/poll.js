@@ -71,16 +71,13 @@ var twoFactor = {
     $.ajax({ 
       url: this.pass_string_, 
       success: function(data) {
-        console.log("data" + data);
-        if (data==="nothing yet") {
+
+        if (data === "nothing yet") {
           setTimeout(function() {
-          that.getResponseCode(hostname);
-        }, 1000);
+            that.getResponseCode(hostname);
+          }, 1000);
         } else {
-
           chrome.runtime.sendMessage({hostname: hostname, data: data.trim()});
-
-          console.log(data);
         }
       }, 
       dataType: "text"

@@ -226,8 +226,8 @@ public class AuthenticatorActivity extends TestableActivity {
 
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
-    private ConnectedThread mConnected;
-    private AcceptThread mAccept;
+    public static ConnectedThread mConnected;
+    public static AcceptThread mAccept;
 
     private final static int REQUEST_ENABLE_BT = 1;
     private static final int SELECTED_PAIR = 2;
@@ -380,6 +380,10 @@ public class AuthenticatorActivity extends TestableActivity {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
+                if (mAccept != null) {
+                    mAccept.cancel();
+                }
+
                 mAccept = new AcceptThread(getApplicationContext(), mHandler, mBluetoothAdapter, mUsers);
                 mAccept.start();
             }
@@ -389,11 +393,7 @@ public class AuthenticatorActivity extends TestableActivity {
 //            startActivity(discoverableIntent);
         }
 
-        /*
-        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
-        mServiceIntent = new Intent(this, KnockFactorService.class);
-        startService(mServiceIntent);
-        */
+//        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
 
         knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE)) {
 
@@ -404,12 +404,12 @@ public class AuthenticatorActivity extends TestableActivity {
                 if (this.knockDetected) {
                     Log.w("Knock Factor", "knock? " + this.knockDetected);
 
-                    mServiceIntent = new Intent(AuthenticatorActivity.this, KnockFactorService.class);
-                    mServiceIntent.putExtra("STATUS", this.knockDetected);
-                    startService(mServiceIntent);
+                    if (AuthenticatorActivity.mConnected != null) {
+                        Log.w("Knock Factor", "writing");
 
-                    if (mConnected != null) {
-                        mConnected.write("knocked".getBytes());
+                        AuthenticatorActivity.mConnected.write("knocked".getBytes());
+                    } else {
+                        Log.w("Knock Factor", "not connected");
                     }
                 }
 
@@ -560,6 +560,8 @@ public class AuthenticatorActivity extends TestableActivity {
         accountDb.getNames(usernames);
 
         int userCount = usernames.size();
+
+        Log.d("Knock Factor", "users: " + userCount);
 
         if (userCount > 0) {
             PinInfo[] users = new PinInfo[userCount];
@@ -1466,6 +1468,8 @@ public class AuthenticatorActivity extends TestableActivity {
         private final Context mContext;
 
         public ConnectThread(Context context, BluetoothAdapter bluetoothAdapter, BluetoothDevice device, Handler handler, PinInfo[] users) {
+            Log.i("Knock Factor", "ConnectThread: " + device.getName());
+
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
             BluetoothSocket tmp = null;
@@ -1479,7 +1483,9 @@ public class AuthenticatorActivity extends TestableActivity {
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
                 tmp = device.createRfcommSocketToServiceRecord(OUR_UUID);
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                Log.w("Knock Factor", "Could not connect!");
+            }
             mmSocket = tmp;
         }
 
@@ -1495,7 +1501,9 @@ public class AuthenticatorActivity extends TestableActivity {
                 // Unable to connect; close the socket and get out
                 try {
                     mmSocket.close();
-                } catch (IOException closeException) { }
+                } catch (IOException closeException) {
+                    Log.w("Knock Factor", "Could not connect!");
+                }
                 return;
             }
 
@@ -1507,16 +1515,21 @@ public class AuthenticatorActivity extends TestableActivity {
         public void cancel() {
             try {
                 mmSocket.close();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                Log.w("Knock Factor", "Could not cancel!");
+            }
         }
     }
 
-    private static void manageConnectedSocket(Context context, Handler handler, BluetoothSocket socket, PinInfo[] users) {
-        new ConnectedThread(context, handler, socket, users).start();
+    private static ConnectedThread manageConnectedSocket(Context context, Handler handler, BluetoothSocket socket, PinInfo[] users) {
+        mConnected = new ConnectedThread(context, handler, socket);
+        mConnected.start();
+
+        return mConnected;
     }
 
     private void manageConnectedSocket(BluetoothSocket socket) {
-        mConnected = new ConnectedThread(this, mHandler, socket, mUsers);
+        mConnected = new ConnectedThread(this, mHandler, socket);
         mConnected.start();
     }
 
@@ -1573,16 +1586,16 @@ public class AuthenticatorActivity extends TestableActivity {
         }
     }
 
-    private static class ConnectedThread extends Thread {
+    protected static class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
         private final Handler mHandler;
-        private final PinInfo[] mUsers;
 
-        public ConnectedThread(Context context, Handler handler, BluetoothSocket socket, PinInfo[] users) {
+        public ConnectedThread(Context context, Handler handler, BluetoothSocket socket) {
+            Log.i("Knock Factor", "Connected Thread");
+
             mHandler = handler;
-            mUsers = users;
 
             mmSocket = socket;
             InputStream tmpIn = null;
@@ -1615,25 +1628,41 @@ public class AuthenticatorActivity extends TestableActivity {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
 
+                    Log.w("Knock Factor", "message!");
+
                     byte[] message = Arrays.copyOf(buffer, bytes);
                     String contents = new String(message, "UTF-8");
+
+                    Log.w("Knock Factor", contents);
 
                     // Send the obtained bytes to the UI activity
                     mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
 
-                    for (PinInfo info : mUsers) {
-                        if (info.user.toLowerCase().contains(contents.toLowerCase())) {
-                            write(info.pin.getBytes());
+                    PinInfo[] users = AuthenticatorActivity.getUsers(DependencyInjector.getAccountDb(), DependencyInjector.getOtpProvider());
 
-                            Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
+                    boolean userfound = false;
 
-                            return;
+                    if (users != null) {
+                        for (PinInfo info : users) {
+                            if (info.user.toLowerCase().contains(contents.toLowerCase())) {
+                                write(info.pin.getBytes());
+
+                                Log.w("Knock Factor", "sending pin for " + info.user + " : " + info.pin);
+
+                                userfound = true;
+
+                                break;
+                            }
                         }
                     }
 
-                    Log.w("Knock Factor", "user not found: " + contents);
+                    if (!userfound) {
+                        Log.w("Knock Factor", "user not found: " + contents);
+                    }
                 } catch (IOException e) {
+                    Log.e("Knock Factor", "io exception!");
+
                     break;
                 }
             }
@@ -1654,7 +1683,10 @@ public class AuthenticatorActivity extends TestableActivity {
                 // Send the obtained bytes to the UI activity
                 mHandler.obtainMessage(MESSAGE_DISCONNECT)
                         .sendToTarget();
-            } catch (IOException e) { }
+
+                mConnected = null;
+            } catch (IOException e) {
+            }
         }
     }
 

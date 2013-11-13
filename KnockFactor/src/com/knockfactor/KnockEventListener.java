@@ -20,7 +20,7 @@ public class KnockEventListener implements SensorEventListener {
     float minZ;
     float maxZ;
 
-    final int millisInFuture = 2000; // milliseconds
+    final int millisInFuture = 1000; // milliseconds
     final long countDownInterval = 1000;
     private int numKnocks = 0;
     private MyCountDownTimer mCountDownTimer;
@@ -35,7 +35,7 @@ public class KnockEventListener implements SensorEventListener {
         mSensorManager.registerListener(this, mAcceleromator, SensorManager.SENSOR_DELAY_NORMAL);
         currZ = 0;
         minZ = 2;
-        maxZ = 7;
+        maxZ = 12;
     }
 
 
@@ -91,6 +91,8 @@ public class KnockEventListener implements SensorEventListener {
         @Override
         public void onFinish() {
             finished = true;
+            numKnocks = 0;
+            knockDetected = false;
         }
     }
 }
