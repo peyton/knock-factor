@@ -26,17 +26,19 @@ var twoFactor = {
     console.log(link.hostname);
 
     var hostname = link.hostname;
-    var host_f = '';
+    var host_f;
 
-    if (hostname.indexOf("dropbox") != -1) {
+    if (hostname.indexOf("dropbox") != -1 && url_full.indexOf("verify_code") != -1) {
       host_f = "dropbox"; 
-    } else if (hostname.indexOf("github") != -1) {
+    } else if (hostname.indexOf("github") != -1 && (url_full.indexOf("session") != -1 || url_full.indexOf("two_factor_authentication") != -1)) {
       host_f = "github";
     } else if (hostname.indexOf("mail.google") != -1) {
       host_f = "mail.google";
     }
 
-    this.pollKnocked(host_f);
+    if (host_f) {
+      this.pollKnocked(host_f);
+    }
   },
  
   /**
@@ -92,13 +94,11 @@ var twoFactor = {
    * @public
    */
   pollKnocked: function(hostname) {
-    console.log("polling knocked");
-
     var link = hostname;
     var that = this;
 
     $.ajax({ url: this.polling_, success: function(data){
-      if (data==="yes") { 
+      if (data === "yes") { 
         that.sendHostname(hostname);
       } else {
         setTimeout(function() {
