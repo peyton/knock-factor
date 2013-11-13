@@ -13,11 +13,10 @@
   "content_scripts": [
     {
       "matches" : ["https://www.facebook.com/*", "https://www.dropbox.com/*", "https://github.com/*"],
-      "js": ["jquery-1.10.2.min.js", "popup.js"]
+      "js": ["jquery-1.10.2.min.js", "poll.js"]
     }
   ],
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html"
+  "background": {
+    "scripts": ["background.js"]
   }
 }

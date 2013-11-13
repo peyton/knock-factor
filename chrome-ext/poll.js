@@ -4,11 +4,6 @@
 
 var twoFactor = {
   /**
-   * Flickr URL that will give us lots and lots of whatever we're looking for.
-   *
-   * See http://www.flickr.com/services/api/flickr.photos.search.html for
-   * details about the construction of this URL.
-   *
    * @type {string}
    * @private
    */
@@ -21,24 +16,27 @@ var twoFactor = {
    *
    * @public
    */
-  getHostname: function() {
-    var that = this;
-    chrome.tabs.getSelected(null, function(tab) {
-      var link = document.createElement('a');
-      var url_full = tab.url;
-      link.href = tab.url;
-      console.log(link.hostname);
-      var hostname = link.hostname;
-      var host_f = '';
-      if (hostname.indexOf("dropbox") != -1) {
-        host_f = "dropbox"; 
-      } else if (hostname.indexOf("github") != -1) {
-        host_f = "github";
-      } else if (hostname.indexOf("mail.google") != -1) {
-        host_f = "mail.google";
-      }
-      that.pollKnocked(host_f);
-    });
+  getHostname: function(url) {
+    
+    var link = document.createElement('a');
+
+    var url_full = url;
+    link.href = url;
+
+    console.log(link.hostname);
+
+    var hostname = link.hostname;
+    var host_f = '';
+
+    if (hostname.indexOf("dropbox") != -1) {
+      host_f = "dropbox"; 
+    } else if (hostname.indexOf("github") != -1) {
+      host_f = "github";
+    } else if (hostname.indexOf("mail.google") != -1) {
+      host_f = "mail.google";
+    }
+
+    this.pollKnocked(host_f);
   },
  
   /**
@@ -77,24 +75,9 @@ var twoFactor = {
           that.getResponseCode(hostname);
         }, 1000);
         } else {
-          switch (hostname) {
-            case "dropbox":
-              console.log("correct");
-              chrome.tabs.executeScript({
-                code:
-                  '$("input#code").val("' + data.trim() + '");$("#twofactor-confirm").submit();'
-              });
-              break;
-            case "github":
-              console.log("correct");
-              chrome.tabs.executeScript({
-                code:
-                  '$("input[name="otp"]).val("' + data.trim() + '");$("button[type="submit"]").submit();'
-              });
-            default:
-              console.log("break");
-              break;
-          }
+
+          chrome.runtime.sendMessage({hostname: hostname, data: data.trim()});
+
           console.log(data);
         }
       }, 
@@ -109,8 +92,11 @@ var twoFactor = {
    * @public
    */
   pollKnocked: function(hostname) {
+    console.log("polling knocked");
+
     var link = hostname;
     var that = this;
+
     $.ajax({ url: this.polling_, success: function(data){
       if (data==="yes") { 
         that.sendHostname(hostname);
@@ -124,6 +110,12 @@ var twoFactor = {
 }
   
   //start polling once we loaded the page
-document.addEventListener('DOMContentLoaded', function () {
-  twoFactor.getHostname();
-});
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.url) {
+      console.log(request.url);
+
+      twoFactor.getHostname(request.url);
+    }
+  }
+);

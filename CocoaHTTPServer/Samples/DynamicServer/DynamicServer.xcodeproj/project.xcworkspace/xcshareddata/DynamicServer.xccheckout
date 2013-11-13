@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>5B4875BB-3639-450B-B25D-CCB48717255C</string>
+	<string>48C9E4DC-B01B-4971-9F8B-A02F101AA70E</string>
 	<key>IDESourceControlProjectName</key>
 	<string>DynamicServer</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>0B500B49-5841-417E-A0AE-9C478991957C</key>
-		<string>ssh://github.com/peyton/knock-factor-authentication.git</string>
+		<key>EDC0267C-F3D8-4DAB-BD67-A437211C9843</key>
+		<string>ssh://github.com/peyton/knock-factor.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>CocoaHTTPServer/Samples/DynamicServer/DynamicServer.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>0B500B49-5841-417E-A0AE-9C478991957C</key>
+		<key>EDC0267C-F3D8-4DAB-BD67-A437211C9843</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/peyton/knock-factor-authentication.git</string>
+	<string>ssh://github.com/peyton/knock-factor.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>0B500B49-5841-417E-A0AE-9C478991957C</string>
+	<string>EDC0267C-F3D8-4DAB-BD67-A437211C9843</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>0B500B49-5841-417E-A0AE-9C478991957C</string>
+			<string>EDC0267C-F3D8-4DAB-BD67-A437211C9843</string>
 			<key>IDESourceControlWCCName</key>
-			<string>knock-factor-authentication</string>
+			<string>knock-factor</string>
 		</dict>
 	</array>
 </dict>
