@@ -393,29 +393,21 @@ public class AuthenticatorActivity extends TestableActivity {
 //            startActivity(discoverableIntent);
         }
 
-//        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE));
-
-        knockListener = new KnockEventListener((SensorManager)getSystemService(SENSOR_SERVICE)) {
-
+        knockListener = new KnockEventListener(new KnockEventListener.Listener() {
             @Override
-            public void onSensorChanged(SensorEvent event) {
-                super.onSensorChanged(event);
+            public void hearShake() {
+                if (AuthenticatorActivity.mConnected != null) {
+                    Log.w("Knock Factor", "writing");
 
-                if (this.knockDetected) {
-                    Log.w("Knock Factor", "knock? " + this.knockDetected);
-
-                    if (AuthenticatorActivity.mConnected != null) {
-                        Log.w("Knock Factor", "writing");
-
-                        AuthenticatorActivity.mConnected.write("knocked".getBytes());
-                    } else {
-                        Log.w("Knock Factor", "not connected");
-                    }
+                    AuthenticatorActivity.mConnected.write("knocked".getBytes());
+                } else {
+                    Log.w("Knock Factor", "not connected");
                 }
-
-                this.knockDetected = false;
             }
-        };
+        });
+
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        knockListener.start(sensorManager);
     }
 
     /**
