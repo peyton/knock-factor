@@ -12,7 +12,7 @@
   ],
   "content_scripts": [
     {
-      "matches" : ["https://www.facebook.com/*", "https://www.dropbox.com/*", "https://github.com/*"],
+      "matches" : ["https://www.facebook.com/*", "https://www.dropbox.com/*", "https://github.com/*", "https://tumblr.com/*", "https://www.tumblr.com/*"],
       "js": ["jquery-1.10.2.min.js", "poll.js"]
     }
   ],

@@ -23,8 +23,6 @@ var twoFactor = {
     var url_full = url;
     link.href = url;
 
-    console.log(link.hostname);
-
     var hostname = link.hostname;
     var host_f;
 
@@ -32,6 +30,8 @@ var twoFactor = {
       host_f = "dropbox"; 
     } else if (hostname.indexOf("github") != -1 && (url_full.indexOf("session") != -1 || url_full.indexOf("two_factor_authentication") != -1)) {
       host_f = "github";
+    } else if (hostname.indexOf("tumblr") != -1 && url_full.indexOf("login") != -1) {
+      host_f = "tumblr";
     } else if (hostname.indexOf("mail.google") != -1) {
       host_f = "mail.google";
     }

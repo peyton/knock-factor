@@ -25,6 +25,11 @@ chrome.runtime.onMessage.addListener(
               '$(\'input[name="otp"]\').val("' + request.data + '");$(\'button[type="submit"]\').submit();'
           });
           break;
+        case "tumblr":
+          chrome.tabs.executeScript({
+            code:
+              'document.getElementById("tfa_response_field").value = "' + request.data + '";$("#signup_form").submit();'
+          });
         default:
           console.log("break");
           break;
