@@ -30,7 +30,7 @@
   from the device using various backup methods (e.g., adb backup introduced in ICS).
   -->
   <application android:label="@string/app_name_short"
-               android:icon="@drawable/ic_launcher_knockfactor"
+               android:icon="@drawable/ic_launcher"
                android:theme="@style/AuthenticatorTheme"
                android:name="com.knockfactor.AuthenticatorApplication"
                android:allowBackup="false">
